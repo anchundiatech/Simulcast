@@ -1,0 +1,26 @@
+# Simulcast session definitions.
+# Each entry becomes a live caption track on the audience site.
+#
+# source_language:
+#   - "en", "es", "pt", ... to pin the input language
+#   - "auto" for automatic detection (transcribe-only sessions)
+# output_languages:
+#   - "original"  -> transcript in the spoken language
+#   - "es" / "en" / "pt" ... -> translated transcript
+#   One Gemini Live connection produces "original" + one translation.
+
+sessions:
+  - id: stage-1
+    name: "Main Stage"
+    source_language: en
+    output_languages: [original, es]
+
+  - id: stage-2
+    name: "Stage 2 — Workshops"
+    source_language: en
+    output_languages: [original, es]
+
+  - id: stage-3
+    name: "Stage 3 — Community"
+    source_language: es
+    output_languages: [original, en]
