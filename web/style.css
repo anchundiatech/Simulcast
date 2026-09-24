@@ -509,6 +509,13 @@ dd {
   .row.stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .lp-hero {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+  .lp-footer {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Monitor panel */
@@ -801,6 +808,10 @@ dd {
 }
 
 /* ---------------------------------------------------------------- Landing */
+html {
+  scroll-behavior: smooth;
+}
+
 .lp {
   flex: 1;
   width: 100%;
@@ -816,17 +827,23 @@ dd {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 2rem 1.75rem;
+  padding: 2.25rem;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 1.75rem;
+  align-items: center;
+}
+.lp-hero-text {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-width: 0;
 }
 .lp-hero h2 {
   margin: 0;
-  font-size: clamp(1.45rem, 3vw, 2.1rem);
-  line-height: 1.25;
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+  line-height: 1.2;
   color: var(--ink);
-  max-width: 30ch;
 }
 .lp-lead {
   margin: 0;
@@ -850,6 +867,75 @@ dd {
   padding: 0;
 }
 
+/* Install command box (Dokploy-style) */
+.lp-cmd {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+}
+.lp-cmd-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.lp-cmd code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Hero preview card (mock captions view) */
+.lp-preview {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.lp-preview-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lp-preview-line {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  padding: 0.5rem 0.7rem;
+  background: var(--panel);
+  border-left: 3px solid var(--border);
+  border-radius: 8px;
+}
+.lp-preview-line.orig {
+  color: var(--muted);
+}
+.lp-preview-line.trans {
+  color: var(--accent);
+  font-weight: 600;
+  border-left-color: var(--accent-2);
+}
+.lp-preview-line.dim {
+  opacity: 0.6;
+}
+.lp-preview-foot {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding-top: 0.35rem;
+}
+
 .lp-section {
   display: flex;
   flex-direction: column;
@@ -858,7 +944,7 @@ dd {
 }
 .lp-section > h2 {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   color: var(--ink);
 }
 .lp-section > h3 {
@@ -868,6 +954,137 @@ dd {
 }
 .lp-section .hint {
   margin: 0;
+}
+.lp-section-lead {
+  margin: 0;
+  max-width: 60rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.lp-section-lead a {
+  color: var(--accent-2);
+}
+
+/* Stats row */
+.lp-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+}
+.lp-stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.lp-stat strong {
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.lp-stat span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* FAQ accordion */
+.lp-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.lp-faq details {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.95rem;
+}
+.lp-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.95rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.lp-faq summary::-webkit-details-marker {
+  display: none;
+}
+.lp-faq summary::after {
+  content: "+";
+  font-weight: 700;
+  color: var(--accent-2);
+  font-size: 1.15rem;
+  line-height: 1;
+  flex: none;
+}
+.lp-faq details[open] summary::after {
+  content: "–";
+}
+.lp-faq details p {
+  margin: 0.55rem 0 0;
+}
+.lp-faq details a {
+  color: var(--accent-2);
+}
+
+/* Final CTA block */
+.lp-cta-block {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+.lp-cta-block h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+  color: var(--ink);
+}
+.lp-cta-block .lp-lead {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+/* Landing footer with columns */
+.lp-footer {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+.lp-foot-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+}
+.lp-foot-col strong {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+.lp-foot-col > span {
+  line-height: 1.5;
+}
+.lp-foot-col a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.lp-foot-col a:hover {
+  color: var(--accent-2);
 }
 
 .lp-grid {

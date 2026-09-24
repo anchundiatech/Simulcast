@@ -109,6 +109,12 @@ def test_landing_and_program_pages() -> None:
         assert "Roadmap" in r.text
         assert "Auth por sesión" in r.text
         assert "Apache-2.0" in r.text
+        # Dokploy-style sections: features, stats, FAQ, final CTA.
+        assert 'id="features"' in r.text
+        assert 'id="faq"' in r.text
+        assert "Preguntas frecuentes" in r.text
+        assert "lp-stats" in r.text
+        assert "lp-cmd" in r.text
         # Public picker/player lives at /program now.
         r = client.get("/program")
         assert r.status_code == 200

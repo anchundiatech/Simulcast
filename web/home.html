@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simulcast — Subtítulos simultáneos en vivo para conferencias</title>
-  <meta name="description" content="Simulcast: transcripción y traducción en vivo a escala para conferencias. Open source, Apache-2.0, API REST + WebSockets." />
+  <meta name="description" content="Simulcast: sistema open source de transcripción y traducción en vivo a escala para conferencias. Apache-2.0, API REST + WebSockets, overlay OBS." />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
@@ -17,48 +17,70 @@
       </div>
     </div>
     <nav class="controls">
-      <a class="btn primary" href="/program">Programa en vivo</a>
-      <a class="btn ghost" href="/operator">Operación</a>
-      <a class="btn ghost" href="/monitor">Monitoreo</a>
+      <a class="btn ghost" href="#features">Features</a>
       <a class="btn ghost" href="#api">API</a>
+      <a class="btn ghost" href="#roadmap">Roadmap</a>
+      <a class="btn ghost" href="#faq">FAQ</a>
       <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub <span class="ico">↗</span></a>
+      <a class="btn primary" href="/program">Ver el programa</a>
     </nav>
   </header>
 
   <main class="lp">
     <!-- Hero -->
     <section class="lp-hero">
-      <h2>El sistema open source de subtítulos simultáneos para conferencias</h2>
-      <p class="lp-lead">
-        Simulcast es un sistema completo —no una librería— para producir subtítulos en vivo en
-        decenas de escenarios en paralelo: recibe el audio de un escenario (OBS por RTMP o el audio
-        de tu navegador), lo transcribe y traduce en tiempo real con la Gemini Live API, y lo
-        entrega a la audiencia web, al overlay de OBS y a cualquier cliente por API.
-        Código abierto bajo licencia Apache-2.0: self-hosted, sin vendor lock-in.
-      </p>
-      <div class="lp-cta">
-        <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
-        <a class="btn" href="/operator">Compartir audio</a>
-        <a class="btn ghost" href="#api">Referencia de la API <span class="ico">↓</span></a>
-        <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Ver código <span class="ico">↗</span></a>
+      <div class="lp-hero-text">
+        <h2>Subtítulos en vivo para cada escenario, en paralelo, sin infraestructura propia</h2>
+        <p class="lp-lead">
+          Simulcast recibe el audio de tu conferencia (OBS por RTMP o el audio del navegador),
+          lo transcribe y traduce en tiempo real con la Gemini Live API, y lo entrega a la
+          audiencia web y al overlay de tu stream. Sistema completo, self-hosted, open source.
+        </p>
+        <div class="lp-cta">
+          <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
+          <a class="btn" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Star en GitHub <span class="ico">↗</span></a>
+          <a class="btn ghost" href="#api">Referencia de la API</a>
+        </div>
+        <div class="lp-cmd" role="group" aria-label="Instalación">
+          <span class="lp-cmd-label">Instalación</span>
+          <code>git clone https://github.com/anchundiatech/Simulcast.git &amp;&amp; cd simulcast</code>
+          <code>cp .env.example .env &amp;&amp; docker compose up -d</code>
+        </div>
+        <ul class="lp-tags">
+          <li class="pill live">Open source · Apache-2.0</li>
+          <li class="pill live">Self-hosted</li>
+          <li class="pill">RTMP + navegador</li>
+          <li class="pill">Overlay OBS/vMix</li>
+        </ul>
       </div>
-      <ul class="lp-tags">
-        <li class="pill live">Open source · Apache-2.0</li>
-        <li class="pill live">Self-hosted</li>
-        <li class="pill">Gemini Live API</li>
-        <li class="pill">RTMP + navegador</li>
-        <li class="pill">Overlay OBS/vMix</li>
-        <li class="pill">Multi-sesión</li>
-      </ul>
+      <aside class="lp-preview" aria-hidden="true">
+        <div class="lp-preview-bar">
+          <span class="pill live">● en vivo</span>
+          <span class="muted-num">main · original + es</span>
+        </div>
+        <p class="lp-preview-line orig">Welcome to Nerdearla 2026 — thanks for joining us today.</p>
+        <p class="lp-preview-line trans">Bienvenidos a Nerdearla 2026 — gracias por acompañarnos hoy.</p>
+        <p class="lp-preview-line orig dim">We'll start with a quick overview of the agenda…</p>
+        <p class="lp-preview-line trans dim">Comenzamos con un resumen rápido de la agenda…</p>
+        <div class="lp-preview-foot">
+          <span class="pill">/program</span>
+          <span class="pill">/overlay</span>
+          <span class="pill">/api</span>
+        </div>
+      </aside>
     </section>
 
-    <!-- Qué es -->
-    <section class="lp-section">
-      <h2>Qué hace</h2>
+    <!-- Features -->
+    <section class="lp-section" id="features">
+      <h2>Todo lo que necesitás para producir subtítulos en vivo</h2>
+      <p class="lp-section-lead">
+        Desde la ingesta de audio hasta el export final: un solo sistema para el equipo de
+        producción, los escenarios y la audiencia.
+      </p>
       <div class="lp-grid">
         <article class="card">
           <h3>Transcripción en vivo</h3>
-          <p class="hint">El audio del escenario se transcribe en el idioma hablado, con parciales (interim) y finales, en menos de un segundo.</p>
+          <p class="hint">El audio del escenario se transcribe en el idioma hablado, con parciales (interim) y finales, en tiempo real.</p>
         </article>
         <article class="card">
           <h3>Traducción simultánea</h3>
@@ -73,13 +95,47 @@
           <p class="hint"><strong>OBS → RTMP</strong> para producción, o <strong>audio del navegador</strong> (pestaña o micrófono) para probar sin infraestructura.</p>
         </article>
         <article class="card">
-          <h3>Quemar en el stream</h3>
+          <h3>Overlay para el stream</h3>
           <p class="hint">La página <code>/overlay</code> es un Browser Source transparente para OBS, vMix o Streamlabs: subtítulos dentro del video.</p>
         </article>
         <article class="card">
-          <h3>Operación y monitoreo</h3>
-          <p class="hint">Panel de operación para el audio y panel de monitoreo con latencia, rates y errores en vivo para el equipo de producción.</p>
+          <h3>Panel de monitoreo</h3>
+          <p class="hint"><code>/monitor</code> con estado, latencia, rates y errores en vivo — pensado para una pantalla del equipo de producción.</p>
         </article>
+        <article class="card">
+          <h3>Export SRT / VTT / TXT</h3>
+          <p class="hint">Al final de cada charla, exportá los subtítulos por sesión e idioma desde la API para publicarlos.</p>
+        </article>
+        <article class="card">
+          <h3>API REST + WebSockets</h3>
+          <p class="hint">Todo el sistema se opera por HTTP + WS, con OpenAPI en <a href="/docs"><code>/docs</code></a>. Sin cajas negras.</p>
+        </article>
+        <article class="card">
+          <h3>Charlas largas sin cortes</h3>
+          <p class="hint">Session resumption + compresión de contexto: charlas de 30–60 min sin desconexiones, con reintentos y backoff.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="lp-section">
+      <div class="lp-stats">
+        <div class="lp-stat">
+          <strong>10+</strong>
+          <span>escenarios en paralelo por instancia</span>
+        </div>
+        <div class="lp-stat">
+          <strong>100 ms</strong>
+          <span>chunks de audio PCM (16 kHz mono)</span>
+        </div>
+        <div class="lp-stat">
+          <strong>5</strong>
+          <span>vistas: landing, programa, operación, monitoreo y overlay</span>
+        </div>
+        <div class="lp-stat">
+          <strong>0</strong>
+          <span>API keys expuestas al navegador</span>
+        </div>
       </div>
     </section>
 
@@ -237,7 +293,7 @@ curl -OJ 'http://localhost:8000/api/sessions/main/export.vtt?lang=es'</pre>
         </article>
         <article class="card">
           <h3>Transparente por diseño</h3>
-          <p class="hint">Todo el sistema es HTTP + WebSockets documentado abajo, con OpenAPI en <a href="/docs"><code>/docs</code></a>. Sin cajas negras: podés leer el código de cada worker.</p>
+          <p class="hint">Todo el sistema es HTTP + WebSockets documentado arriba, con OpenAPI en <a href="/docs"><code>/docs</code></a>. Sin cajas negras: podés leer el código de cada worker.</p>
         </article>
         <article class="card">
           <h3>Contribuciones bienvenidas</h3>
@@ -249,7 +305,7 @@ curl -OJ 'http://localhost:8000/api/sessions/main/export.vtt?lang=es'</pre>
     <!-- Roadmap -->
     <section class="lp-section" id="roadmap">
       <h2>Roadmap</h2>
-      <p class="hint">Lo que ya está y lo que viene. El orden es orientativo y puede cambiar según la comunidad.</p>
+      <p class="lp-section-lead">Lo que ya está y lo que viene. El orden es orientativo y puede cambiar según la comunidad.</p>
       <ul class="lp-road">
         <li class="done"><span class="pill live">hecho</span> Transcripción + traducción en vivo multi-sesión (RTMP y navegador)</li>
         <li class="done"><span class="pill live">hecho</span> Vista de programa público, overlay OBS/vMix y panel de monitoreo</li>
@@ -285,19 +341,83 @@ curl -s http://localhost:8000/api/health | jq</pre>
         </article>
       </div>
     </section>
+
+    <!-- FAQ -->
+    <section class="lp-section" id="faq">
+      <h2>Preguntas frecuentes</h2>
+      <p class="lp-section-lead">
+        ¿No está tu duda? Abrí un issue en
+        <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a>.
+      </p>
+      <div class="lp-faq">
+        <details>
+          <summary>¿Necesito una API key de Gemini?</summary>
+          <p class="hint">Sí, se consigue gratis en <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> y va solo en el servidor (<code>.env</code>). El navegador nunca la ve.</p>
+        </details>
+        <details>
+          <summary>¿Puedo probarlo sin OBS ni servidor?</summary>
+          <p class="hint">Sí. Andá a <a href="/operator">/operator</a>, creá una sesión y usá <strong>Compartir audio</strong> (pestaña con un video en inglés o el micrófono). La demo completa tarda 60 segundos.</p>
+        </details>
+        <details>
+          <summary>¿Cuántas sesiones soporta en paralelo?</summary>
+          <p class="hint">El límite configurable es <code>SIMULCAST_MAX_SESSIONS</code> (default 20) y 10 escenarios en vivo es cómodo. El cuello de botella habitual es la cuota de la Gemini Live API, no la CPU local.</p>
+        </details>
+        <details>
+          <summary>¿Es open source de verdad?</summary>
+          <p class="hint">Sí: licencia <strong>Apache-2.0</strong> aprobada por la OSI, repo público, self-hosted y sin vendor lock-in. Podés modificarlo y hasta usarlo comercialmente.</p>
+        </details>
+        <details>
+          <summary>¿Y la autenticación?</summary>
+          <p class="hint">Hoy se protege por red (firewall / VPN / LAN del venue) tal como explica <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> §8. La <strong>auth por sesión con tokens</strong> está en el <a href="#roadmap">roadmap</a>.</p>
+        </details>
+        <details>
+          <summary>¿Cuánto cuesta?</summary>
+          <p class="hint">El software es gratis (Apache-2.0). Pagás solo lo que consumas de la Gemini Live API al <a href="https://aistudio.google.com/usage" target="_blank" rel="noopener">Google AI Studio → Usage</a>: cada sesión en aire es una conexión.</p>
+        </details>
+        <details>
+          <summary>¿Funciona con vMix o Streamlabs?</summary>
+          <p class="hint">Sí: <code>/overlay</code> es una página transparente pensada como Browser Source de OBS, vMix, Streamlabs u cualquier tool que cargue HTML.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- CTA final -->
+    <section class="lp-cta-block">
+      <h2>Poné subtítulos en vivo en tu próximo evento</h2>
+      <p class="lp-lead">
+        Levantalo con Docker en un servidor, compartí la URL del programa y que nadie se pierda
+        una charla — en el idioma que prefiera.
+      </p>
+      <div class="lp-cta">
+        <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
+        <a class="btn" href="/operator">Compartir audio</a>
+        <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Código en GitHub <span class="ico">↗</span></a>
+      </div>
+    </section>
   </main>
 
-  <footer class="footer">
-    <span>Simulcast — sistema open source de subtítulos simultáneos · Apache-2.0 · <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a></span>
-    <span>
+  <footer class="footer lp-footer">
+    <div class="lp-foot-col">
+      <strong>Simulcast</strong>
+      <span>Sistema open source de subtítulos simultáneos para conferencias.</span>
+      <span class="muted-num">Apache-2.0 · Vibeathon de Nerdearla</span>
+    </div>
+    <div class="lp-foot-col">
+      <strong>Producto</strong>
+      <a href="/">Inicio</a>
       <a href="/program">Programa</a>
-      ·
       <a href="/operator">Operación</a>
-      ·
       <a href="/monitor">Monitoreo</a>
-      ·
-      <a href="/docs">OpenAPI</a>
-    </span>
+      <a href="/overlay?session=stage-1">Overlay OBS</a>
+    </div>
+    <div class="lp-foot-col">
+      <strong>Desarrolladores</strong>
+      <a href="#api">Referencia de la API</a>
+      <a href="/docs">OpenAPI /docs</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a>
+      <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a>
+    </div>
   </footer>
 </body>
 </html>
