@@ -64,7 +64,7 @@ uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
 ### Demo en 60 segundos (sin OBS)
 
 1. Abrí `/` → elegí una sesión de la grilla (o `/operator` para crear una: ej. `stage-1`, origen `en`, traducción `es`).
-2. En `/operator` → **Compartir audio** → compartí una pestaña con audio (un video de YouTube en inglés sirve).
+2. En `/operator` → marcá una o varias sesiones → **Compartir audio** → compartí una pestaña con audio (un video de YouTube en inglés sirve). El mismo audio se envía a todas las sesiones marcadas al mismo tiempo.
 3. Volvé a `/` → la sesión pasa a **en vivo** → entrá y elegí idioma → subtítulos en vivo.
 
 ## Despliegue con Docker

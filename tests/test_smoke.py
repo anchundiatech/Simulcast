@@ -109,6 +109,9 @@ def test_index_and_operator_pages() -> None:
         r = client.get("/operator")
         assert r.status_code == 200
         assert "Compartir audio" in r.text
+        # Multi-session share UI.
+        assert "ingestSessions" in r.text
+        assert "marcá varias" in r.text
 
 
 def test_monitor_page_and_api() -> None:

@@ -711,3 +711,35 @@ dd {
 #pickerFilter {
   min-width: 12rem;
 }
+
+/* Multi-session audio share checkboxes */
+.check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  min-height: 3rem;
+  max-height: 10rem;
+  overflow-y: auto;
+}
+.check-list label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.check-list input[type="checkbox"] {
+  accent-color: var(--accent-2);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+.check-list .empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+}

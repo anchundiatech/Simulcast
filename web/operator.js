@@ -1,21 +1,23 @@
-/* Simulcast operator UI: session CRUD + browser audio ingest */
+/* Simulcast operator UI: session CRUD + browser audio share (multi-session) */
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
 
   const apiBadge = $("#apiBadge");
   const sessionsTable = $("#sessionsTable").querySelector("tbody");
-  const ingestSession = $("#ingestSession");
+  const ingestSessions = $("#ingestSessions");
   const startBtn = $("#startBtn");
   const stopBtn = $("#stopBtn");
   const statSent = $("#statSent");
   const statChunks = $("#statChunks");
   const statWs = $("#statWs");
+  const statSes = $("#statSes");
   const audioMeter = $("#audioMeter");
   const ingestError = $("#ingestError");
 
   let sessions = [];
-  let ws = null;
+  /** @type {Map<string, WebSocket>} sid → ws */
+  const sockets = new Map();
   let audioCtx = null;
   let workletNode = null;
   let mediaStream = null;
@@ -23,6 +25,10 @@
   let sending = false;
   let bytesSent = 0;
   let chunksSent = 0;
+  /** Checked session ids that survive re-renders. */
+  const checked = new Set();
+  /** First session id when sharing started (for the audience link). */
+  let primarySid = null;
 
   const TARGET_RATE = 16000;
 
@@ -61,12 +67,13 @@
         .map((w) => w.last_error)
         .filter(Boolean)
         .join("; ");
+      const sharing = sockets.has(s.config.id) ? " · ▶" : "";
       tr.innerHTML = `
         <td><strong>${esc(s.config.name)}</strong><br><span class="pill">${esc(s.config.id)}</span></td>
         <td>${esc(s.config.source_language)}</td>
         <td>${(s.config.output_languages || []).map(esc).join(", ")}</td>
         <td><span class="pill ${s.status === "live" ? "live" : s.status === "error" || s.status === "degraded" ? "err" : "warn"}">${esc(s.status)}</span></td>
-        <td>${s.ingest?.active ? `● ${esc(s.ingest.kind)}` : "○ inactivo"}</td>
+        <td>${s.ingest?.active ? `● ${esc(s.ingest.kind)}${sharing}` : "○ inactivo"}</td>
         <td>${workers || "—"}</td>
         <td>${s.viewers ?? 0}</td>
         <td title="${esc(errors)}">${errors ? "⚠" : "—"}</td>
@@ -86,23 +93,61 @@
   }
 
   function renderIngestOptions() {
-    const prev = ingestSession.value;
-    ingestSession.innerHTML = "";
-    for (const s of sessions) {
-      const opt = document.createElement("option");
-      opt.value = s.config.id;
-      opt.textContent = `${s.config.name} (${s.config.id})`;
-      ingestSession.appendChild(opt);
+    // Drop checks for sessions that no longer exist.
+    for (const sid of [...checked]) {
+      if (!sessions.some((s) => s.config.id === sid)) checked.delete(sid);
     }
-    if (prev && sessions.some((s) => s.config.id === prev)) ingestSession.value = prev;
-    $("#viewLink").href = ingestSession.value
-      ? `/?session=${encodeURIComponent(ingestSession.value)}`
-      : "/";
+    ingestSessions.innerHTML = "";
+    if (!sessions.length) {
+      ingestSessions.innerHTML = `<span class="empty">No hay sesiones — creá una arriba.</span>`;
+      updateViewLink();
+      return;
+    }
+    for (const s of sessions) {
+      const label = document.createElement("label");
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = s.config.id;
+      cb.checked = checked.has(s.config.id) || sockets.has(s.config.id);
+      cb.addEventListener("change", () => {
+        if (cb.checked) checked.add(cb.value);
+        else checked.delete(cb.value);
+        updateViewLink();
+        updateSessionStat();
+      });
+      const span = document.createElement("span");
+      span.textContent = `${s.config.name} (${s.config.id})`;
+      label.appendChild(cb);
+      label.appendChild(span);
+      ingestSessions.appendChild(label);
+    }
+    updateViewLink();
+    updateSessionStat();
   }
 
-  ingestSession.addEventListener("change", () => {
-    $("#viewLink").href = `/?session=${encodeURIComponent(ingestSession.value)}`;
-  });
+  function selectedSessions() {
+    return [...checked].filter((sid) => sessions.some((s) => s.config.id === sid));
+  }
+
+  function updateViewLink() {
+    const first = selectedSessions()[0] || primarySid;
+    $("#viewLink").href = first ? `/?session=${encodeURIComponent(first)}` : "/";
+  }
+
+  function updateSessionStat() {
+    const n = sending ? sockets.size : selectedSessions().length;
+    statSes.textContent = sending ? `${n} en vivo` : String(n);
+  }
+
+  function updateWsStat() {
+    if (!sending) {
+      statWs.textContent = "idle";
+      return;
+    }
+    const ok = [...sockets.values()].filter((w) => w.readyState === 1).length;
+    const total = sockets.size;
+    statWs.textContent = ok === total ? `conectado (${ok})` : `${ok}/${total} ok`;
+  }
 
   $("#createForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -136,13 +181,13 @@
   $("#refreshBtn").addEventListener("click", refresh);
   setInterval(refresh, 4000);
 
-  // ---------------------------------------------------------------- ingest
+  // ---------------------------------------------------------------- audio
 
   startBtn.addEventListener("click", async () => {
     ingestError.hidden = true;
-    const sid = ingestSession.value;
-    if (!sid) {
-      showError("Elegí una sesión");
+    const sids = selectedSessions();
+    if (!sids.length) {
+      showError("Elegí al menos una sesión");
       return;
     }
     try {
@@ -174,7 +219,6 @@
       sourceNode = audioCtx.createMediaStreamSource(mediaStream);
 
       // Downsample / mono-mix via ScriptProcessor (universally available).
-      // Buffer 2048 samples ≈ 128 ms — we forward in ~100 ms PCM frames.
       workletNode = audioCtx.createScriptProcessor(4096, 1, 1);
       const pcmQueue = [];
 
@@ -192,7 +236,6 @@
         const rms = Math.sqrt(sum / input.length);
         audioMeter.style.width = `${Math.min(100, rms * 400)}%`;
         pcmQueue.push(new Uint8Array(out.buffer));
-        // Flush when we have >= 1600 bytes (100 ms @ 16k s16le mono).
         flushPcm(pcmQueue);
       };
 
@@ -203,9 +246,20 @@
       workletNode.connect(silent);
       silent.connect(audioCtx.destination);
 
-      connectIngestWs(sid);
+      primarySid = sids[0];
+      sending = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      for (const sid of sids) connectIngestWs(sid);
+      updateViewLink();
+      updateSessionStat();
+      updateWsStat();
     } catch (err) {
+      sending = false;
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
       showError(String(err?.message || err));
+      teardownAudio();
     }
   });
 
@@ -219,47 +273,60 @@
       ingestBuffer = merged;
     }
     const frameBytes = 3200; // 100 ms
-    while (ingestBuffer.length >= frameBytes && ws && ws.readyState === 1) {
+    const open = [...sockets.values()].filter((w) => w.readyState === 1);
+    while (ingestBuffer.length >= frameBytes && open.length) {
       const frame = ingestBuffer.subarray(0, frameBytes);
+      // Fan-out the same PCM frame to every selected session.
+      for (const w of open) {
+        try {
+          w.send(frame);
+        } catch {
+          /* socket died; stats updated elsewhere */
+        }
+      }
       ingestBuffer = ingestBuffer.slice(frameBytes);
-      ws.send(frame);
       bytesSent += frame.length;
       chunksSent += 1;
       statSent.textContent = `${(bytesSent / 1048576).toFixed(2)} MB`;
       statChunks.textContent = String(chunksSent);
     }
+    // No open sockets → drop buffer so we don't grow unbounded.
+    if (!open.length && ingestBuffer.length > frameBytes * 50) {
+      ingestBuffer = new Uint8Array(0);
+    }
   }
 
   function connectIngestWs(sid) {
+    if (sockets.has(sid)) return;
     const proto = location.protocol === "https:" ? "wss" : "ws";
-    ws = new WebSocket(`${proto}://${location.host}/ws/ingest/${sid}`);
+    const ws = new WebSocket(`${proto}://${location.host}/ws/ingest/${sid}`);
     ws.binaryType = "arraybuffer";
+    sockets.set(sid, ws);
+
     ws.onopen = () => {
-      sending = true;
-      startBtn.disabled = true;
-      stopBtn.disabled = false;
-      statWs.textContent = "conectado";
-      // Stop video tracks (we only need audio).
-      mediaStream.getVideoTracks().forEach((t) => t.stop());
+      // Stop video tracks once (only needed at capture start).
+      if (mediaStream) mediaStream.getVideoTracks().forEach((t) => t.stop());
+      updateWsStat();
+      updateSessionStat();
+      renderTable();
     };
     ws.onclose = () => {
-      statWs.textContent = "cerrado";
-      if (sending) stopIngest();
+      sockets.delete(sid);
+      updateWsStat();
+      updateSessionStat();
+      renderTable();
+      // Every socket gone while we thought we were live → full stop.
+      if (sending && sockets.size === 0) stopIngest();
     };
     ws.onerror = () => {
-      statWs.textContent = "error";
-      showError("No se pudo enviar el audio");
+      updateWsStat();
+      showError(`No se pudo enviar el audio a «${sid}»`);
     };
   }
 
   stopBtn.addEventListener("click", stopIngest);
 
-  function stopIngest() {
-    sending = false;
-    try {
-      ws && ws.close();
-    } catch {}
-    ws = null;
+  function teardownAudio() {
     try {
       workletNode && workletNode.disconnect();
       sourceNode && sourceNode.disconnect();
@@ -269,10 +336,23 @@
     if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
     mediaStream = null;
     ingestBuffer = new Uint8Array(0);
+  }
+
+  function stopIngest() {
+    sending = false;
+    for (const w of sockets.values()) {
+      try {
+        w.close();
+      } catch {}
+    }
+    sockets.clear();
+    teardownAudio();
     startBtn.disabled = false;
     stopBtn.disabled = true;
     statWs.textContent = "idle";
+    statSes.textContent = String(selectedSessions().length);
     audioMeter.style.width = "0%";
+    renderTable();
   }
 
   function showError(msg) {
