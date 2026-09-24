@@ -248,7 +248,7 @@
     };
     ws.onerror = () => {
       statWs.textContent = "error";
-      showError("WebSocket de ingesta falló");
+      showError("No se pudo enviar el audio");
     };
   }
 

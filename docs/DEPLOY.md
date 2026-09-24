@@ -55,7 +55,7 @@ En cada computadora de escenario / máquina de streaming:
    - Service: **Custom…**
    - Server: `rtmp://TU_HOST:1935`
    - Stream Key: `main` (el `id` de la sesión)
-2. Verificá en `/operator` que la sesión pase a **ingesta rtmp ● activa**.
+2. Verificá en `/operator` que la sesión pase a **Audio ● activo**.
 3. Los workers de Gemini arrancan solos con el primer audio.
 
 Si el evento ya tiene un MediaMTX / nginx-rtmp existente, apuntá `SIMULCAST` a esa fuente o reutilizá el mismo proceso (ver §7).
@@ -159,7 +159,7 @@ uvicorn server.main:app --host 0.0.0.0 --port 8000
 
 1. **TLS** con Caddy/nginx delante de `:8000` (WSS obligatorio para WebSockets en https).
 2. **API key** solo en el servidor (ya lo es por diseño).
-3. **Ingesta**: restringí `/ws/ingest` y el RTMP a la red del venue (firewall / VPN / `allow` en MediaMTX).
+3. **Audio en vivo**: restringí `/ws/ingest` y el RTMP a la red del venue (firewall / VPN / `allow` en MediaMTX).
 4. **Rate limit** opcional en `/api/*` si es público.
 
 Ejemplo mínimo con Caddy:
@@ -193,7 +193,7 @@ captions.tuevento.com {
 | Síntoma | Causa probable | Fix |
 |---|---|---|
 | `gemini_configured: false` | Falta `GEMINI_API_KEY` | `.env` + `docker compose restart` |
-| Ingesta inactiva en OBS | Stream key ≠ `id` | Usá el id exacto del `sessions.yaml` |
+| Audio inactivo en OBS | Stream key ≠ `id` | Usá el id exacto del `sessions.yaml` |
 | Workers `error` | Key inválida o cuota | `/monitor`, `/api/health`, logs `docker compose logs -f` |
 | Subtítulos lentos | Interim deshabilitado / red | Revisá logs; el UI usa interims para latencia |
 | Sesión corta a los ~10 min | Falta resumption | Ya está habilitado; mirar logs `go_away` |

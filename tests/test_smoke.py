@@ -108,7 +108,7 @@ def test_index_and_operator_pages() -> None:
         assert "sessionSelect" in r.text
         r = client.get("/operator")
         assert r.status_code == 200
-        assert "Ingesta" in r.text
+        assert "Compartir audio" in r.text
 
 
 def test_monitor_page_and_api() -> None:

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simulcast — Ingesta / Operación</title>
+  <title>Simulcast — Audio en vivo / Operación</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body class="operator">
@@ -12,7 +12,7 @@
       <span class="logo">OP</span>
       <div>
         <h1>Simulcast · Operación</h1>
-        <p class="tagline">Ingesta de audio desde el navegador + estado de sesiones</p>
+        <p class="tagline">Compartí audio desde el navegador + estado de sesiones</p>
       </div>
     </div>
     <div class="controls">
@@ -56,9 +56,9 @@
     </section>
 
     <section class="card">
-      <h2>Ingesta desde navegador</h2>
+      <h2>Audio desde el navegador</h2>
       <p class="hint">
-        Comparte una pestaña con audio (o el micrófono) y Simulcast la envía como PCM 16 kHz.
+        Comparte una pestaña con audio (o el micrófono) y Simulcast la envía al servidor.
         Para producción usá OBS → RTMP.
       </p>
       <label class="field">
@@ -66,7 +66,7 @@
         <select id="ingestSession"></select>
       </label>
       <div class="row">
-        <button id="startBtn" class="btn primary">▶ Iniciar ingesta</button>
+        <button id="startBtn" class="btn primary">▶ Compartir audio</button>
         <button id="stopBtn" class="btn danger" disabled>■ Detener</button>
         <a id="viewLink" class="btn ghost" href="/" target="_blank">Ver audiencia ↗</a>
       </div>
@@ -88,7 +88,7 @@
             <th>Origen</th>
             <th>Salidas</th>
             <th>Estado</th>
-            <th>Ingesta</th>
+            <th>Audio</th>
             <th>Workers</th>
             <th>Espectadores</th>
             <th>Errores</th>

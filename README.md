@@ -56,7 +56,7 @@ uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 - Audiencia: <http://localhost:8000/>
-- Operación / ingesta navegador: <http://localhost:8000/operator>
+- Operación / audio desde navegador: <http://localhost:8000/operator>
 - Monitoreo producción: <http://localhost:8000/monitor>
 - Overlay OBS (Browser Source): <http://localhost:8000/overlay?session=stage-1&langs=original,es>
 - Health: <http://localhost:8000/api/health>
@@ -64,7 +64,7 @@ uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
 ### Demo en 60 segundos (sin OBS)
 
 1. Abrí `/` → elegí una sesión de la grilla (o `/operator` para crear una: ej. `stage-1`, origen `en`, traducción `es`).
-2. En `/operator` → **Iniciar ingesta** → compartí una pestaña con audio (un video de YouTube en inglés sirve).
+2. En `/operator` → **Compartir audio** → compartí una pestaña con audio (un video de YouTube en inglés sirve).
 3. Volvé a `/` → la sesión pasa a **en vivo** → entrá y elegí idioma → subtítulos en vivo.
 
 ## Despliegue con Docker
@@ -115,7 +115,7 @@ curl -X POST http://localhost:8000/api/sessions \
 | GET | `/api/sessions/{id}/captions?lang=es` | Historial de captions |
 | GET | `/api/sessions/{id}/export.srt?lang=original` | Export `srt` \| `vtt` \| `txt` |
 | WS | `/ws/captions/{id}?lang=es` | Stream de subtítulos (`lang=all` para todo) |
-| WS | `/ws/ingest/{id}` | Ingesta PCM binaria desde navegador |
+| WS | `/ws/ingest/{id}` | Audio PCM desde el navegador |
 | WS | `/ws/monitor` | Push de estado + snapshots al panel de monitoreo |
 
 ### Formato de eventos WS
@@ -164,7 +164,7 @@ server/
     └── rtmp_ingest.py       # ffmpeg desde MediaMTX
 web/
 ├── index.html / app.js   # Vista audiencia
-├── operator.html / operator.js  # Ingesta demo + panel
+├── operator.html / operator.js  # Panel de audio demo + sesiones
 ├── monitor.html / monitor.js    # Panel de monitoreo producción
 ├── overlay.html          # Overlay OBS/vMix
 └── style.css

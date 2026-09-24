@@ -118,7 +118,7 @@
             ${statusPill(s.status)}
           </header>
           <dl class="mon-stats">
-            <div><dt>Ingesta</dt><dd>${ingestCell(s.ingest)}</dd></div>
+            <div><dt>Audio</dt><dd>${ingestCell(s.ingest)}</dd></div>
             <div><dt>Workers</dt><dd>${workersCell(s.workers)}</dd></div>
             <div><dt>Espectadores</dt><dd>${s.viewers ?? 0}</dd></div>
             <div><dt>Captions/min</dt><dd>${m.captions_per_min ?? 0}</dd></div>
