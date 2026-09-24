@@ -17,7 +17,7 @@
     </div>
     <div class="controls">
       <span id="apiBadge" class="badge badge-off">api —</span>
-      <a class="btn ghost" href="/monitor">Monitoreo ↗</a>
+      <a class="btn ghost" href="/monitor">Monitoreo <span class="ico">↗</span></a>
       <button id="refreshBtn" class="btn ghost">Actualizar</button>
     </div>
   </header>
@@ -55,27 +55,27 @@
       </form>
     </section>
 
-<section class="card">
+    <section class="card">
       <h2>Audio desde el navegador</h2>
       <p class="hint">
         Comparte una pestaña con audio (o el micrófono) y elegí una o varias sesiones:
         el mismo audio se envía a todas al mismo tiempo.
       </p>
-      <label class="field">
+      <div class="field">
         <span>Sesiones (marcá varias si querés)</span>
         <div id="ingestSessions" class="check-list" role="group" aria-label="Sesiones"></div>
-      </label>
-      <div class="row">
-        <button id="startBtn" class="btn primary">▶ Compartir audio</button>
-        <button id="stopBtn" class="btn danger" disabled>■ Detener</button>
-        <a id="viewLink" class="btn ghost" href="/" target="_blank">Ver audiencia ↗</a>
       </div>
-      <div class="row stats">
+      <div class="row">
+        <button id="startBtn" class="btn primary"><span class="ico">▶</span> Compartir audio</button>
+        <button id="stopBtn" class="btn danger" disabled><span class="ico">■</span> Detener</button>
+        <a id="viewLink" class="btn ghost" href="/" target="_blank">Ver audiencia <span class="ico">↗</span></a>
+      </div>
+      <dl class="row stats">
         <div><dt>Enviado</dt><dd id="statSent">0 MB</dd></div>
         <div><dt>Chunks</dt><dd id="statChunks">0</dd></div>
         <div><dt>Estado</dt><dd id="statWs">idle</dd></div>
         <div><dt>Sesiones</dt><dd id="statSes">0</dd></div>
-      </div>
+      </dl>
       <div class="meter"><div id="audioMeter" class="meter-fill"></div></div>
       <p id="ingestError" class="error" hidden></p>
     </section>

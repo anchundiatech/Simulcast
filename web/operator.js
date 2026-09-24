@@ -67,19 +67,19 @@
         .map((w) => w.last_error)
         .filter(Boolean)
         .join("; ");
-      const sharing = sockets.has(s.config.id) ? " · ▶" : "";
+      const sharing = sockets.has(s.config.id) ? ` <span class="ico" title="recibiendo audio">▶</span>` : "";
       tr.innerHTML = `
         <td><strong>${esc(s.config.name)}</strong><br><span class="pill">${esc(s.config.id)}</span></td>
         <td>${esc(s.config.source_language)}</td>
         <td>${(s.config.output_languages || []).map(esc).join(", ")}</td>
         <td><span class="pill ${s.status === "live" ? "live" : s.status === "error" || s.status === "degraded" ? "err" : "warn"}">${esc(s.status)}</span></td>
-        <td>${s.ingest?.active ? `● ${esc(s.ingest.kind)}${sharing}` : "○ inactivo"}</td>
+        <td>${s.ingest?.active ? `<span class="ico">●</span> ${esc(s.ingest.kind)}${sharing}` : `<span class="ico">○</span> inactivo`}</td>
         <td>${workers || "—"}</td>
         <td>${s.viewers ?? 0}</td>
-        <td title="${esc(errors)}">${errors ? "⚠" : "—"}</td>
+        <td class="cell-icon" title="${esc(errors)}">${errors ? "⚠" : "—"}</td>
         <td>
           <a class="btn ghost" href="/?session=${encodeURIComponent(s.config.id)}" target="_blank">Ver</a>
-          <button class="btn ghost" data-del="${esc(s.config.id)}">✕</button>
+          <button class="btn ghost icon" data-del="${esc(s.config.id)}" title="Eliminar sesión" aria-label="Eliminar sesión"><span class="ico">✕</span></button>
         </td>`;
       sessionsTable.appendChild(tr);
     }

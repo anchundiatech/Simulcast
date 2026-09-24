@@ -80,8 +80,11 @@ body {
 .controls {
   display: flex;
   gap: 0.75rem;
-  align-items: end;
+  align-items: center;
   flex-wrap: wrap;
+}
+.controls .field {
+  align-self: center;
 }
 
 .field {
@@ -242,7 +245,8 @@ dl {
   display: grid;
   gap: 0.55rem;
 }
-dl > div {
+/* Label/value pairs: label left, value right (session meta card) */
+#sessionMeta > div {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -317,13 +321,17 @@ dd {
   margin-top: 0.75rem;
 }
 .row.stats {
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
   margin-top: 1rem;
 }
 .row.stats > div {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  align-items: flex-start;
+  min-width: 0;
 }
 .row.stats dt {
   color: var(--muted);
@@ -332,6 +340,18 @@ dd {
 .row.stats dd {
   margin: 0;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fixed-size slot so glyphs (▶ ■ ✕ ↗…) line up with text in any button */
+.ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  flex: none;
+  font-size: 0.85em;
+  line-height: 1;
 }
 
 .btn {
@@ -341,11 +361,19 @@ dd {
   border-radius: 10px;
   padding: 0.55rem 0.9rem;
   font-size: 0.9rem;
+  line-height: 1.2;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: center;
+  gap: 0.4rem;
+  text-align: center;
+  white-space: nowrap;
+}
+.btn.icon {
+  min-width: 2.1rem;
+  padding-inline: 0.55rem;
 }
 .btn:hover {
   border-color: var(--accent-2);
@@ -414,6 +442,19 @@ dd {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+/* Actions column: icons/buttons flush right, vertically centered */
+.table th:last-child,
+.table td:last-child {
+  text-align: right;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.table td:last-child .btn + .btn {
+  margin-left: 0.35rem;
+}
+.table td.cell-icon {
+  text-align: center;
+}
 .table code {
   font-size: 0.82rem;
   background: var(--panel-2);
@@ -464,6 +505,9 @@ dd {
   }
   .meta {
     order: -1;
+  }
+  .row.stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -578,6 +622,7 @@ dd {
   display: flex;
   gap: 0.4rem;
   flex-wrap: wrap;
+  align-items: center;
   margin-top: auto;
   padding-top: 0.35rem;
   border-top: 1px solid var(--border);
@@ -585,6 +630,10 @@ dd {
 .mon-card-f .btn {
   font-size: 0.78rem;
   padding: 0.35rem 0.55rem;
+  min-height: 1.9rem;
+}
+.mon-card-f .btn + .btn {
+  margin-left: 0;
 }
 
 .field.inline {
@@ -703,9 +752,9 @@ dd {
 
 #backBtn {
   min-width: 2.4rem;
-  justify-content: center;
+  min-height: 2.4rem;
+  padding: 0;
   font-size: 1.1rem;
-  padding-inline: 0.55rem;
 }
 
 #pickerFilter {
