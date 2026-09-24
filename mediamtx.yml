@@ -1,0 +1,26 @@
+# MediaMTX — RTMP/SRT/RTSP ingest server for conference stages.
+# OBS → rtmp://<host>:1935/<session_id>
+#
+# Docs: https://github.com/bluenviron/mediamtx
+
+logLevel: info
+logDestinations: [stdout]
+
+# Allow anonymous publish/play (typical for a dedicated captioning box).
+# Put this behind a firewall/VPN in production.
+authInternalUser: any
+authPublishUser: any
+authPlayUser: any
+
+rtmp: yes
+rtmpAddress: :1935
+
+rtsp: no
+hls: no
+webrtc: no
+
+# One path per session; `runOnDemand` is not needed because our app
+# pulls with ffmpeg when the path becomes ready.
+paths:
+  all_others:
+    source: publisher

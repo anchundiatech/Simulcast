@@ -1,0 +1,23 @@
+name: simulcast
+
+services:
+  simulcast:
+    build: .
+    ports:
+      - "8000:8000"
+      - "1935:1935" # RTMP for OBS
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}
+      SIMULCAST_LOG_LEVEL: ${SIMULCAST_LOG_LEVEL:-info}
+      SIMULCAST_MAX_SESSIONS: ${SIMULCAST_MAX_SESSIONS:-20}
+      GEMINI_MODEL_TRANSLATE: ${GEMINI_MODEL_TRANSLATE:-gemini-3.5-live-translate-preview}
+      GEMINI_MODEL_TRANSCRIBE: ${GEMINI_MODEL_TRANSCRIBE:-gemini-3.5-transcribe-live}
+    volumes:
+      - ./sessions.yaml:/app/sessions.yaml:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
