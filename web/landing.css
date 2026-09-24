@@ -1,6 +1,10 @@
 /* Simulcast marketing landing — uses palette tokens from style.css.
    Flat surfaces, subtle blue→cyan accents, no dark UI except the final CTA band. */
 
+html {
+  scroll-behavior: smooth;
+}
+
 .ls-body {
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   background: var(--bg);
