@@ -99,22 +99,35 @@ def test_landing_and_program_pages() -> None:
     with TestClient(app) as client:
         r = client.get("/")
         assert r.status_code == 200
-        assert "Simulcast" in r.text
-        # Landing: product pitch + API reference + open-source roadmap.
+        # Marketing landing: hero + product story.
+        assert "Tu transmisión" in r.text
+        assert "En todos los idiomas" in r.text
+        assert "Iniciar transmisión" in r.text
+        assert "Abrir Simulcast" in r.text
+        assert 'href="/program"' in r.text
+        # Required sections from the landing spec.
+        for anchor in (
+            'id="producto"',
+            'id="como-funciona"',
+            'id="caracteristicas"',
+            'id="integraciones"',
+            'id="open-source"',
+            'id="empezar"',
+        ):
+            assert anchor in r.text, anchor
+        assert "Una transmisión no debería tener un solo idioma" in r.text
+        assert "Del audio a los subtítulos en tiempo real" in r.text
+        assert "Un evento. Diez escenarios" in r.text
+        assert "La audiencia solo tiene que elegir su idioma" in r.text
+        assert "Controla todo desde un solo lugar" in r.text
+        assert "Empieza en minutos" in r.text
+        # Secondary technical section: API reference + auth roadmap note.
         assert 'id="api"' in r.text
         assert "Referencia de la API" in r.text
         assert "/api/sessions" in r.text
         assert "/ws/captions" in r.text
-        assert 'href="/program"' in r.text
-        assert "Roadmap" in r.text
-        assert "Auth por sesión" in r.text
+        assert "auth por sesión" in r.text
         assert "Apache-2.0" in r.text
-        # Dokploy-style sections: features, stats, FAQ, final CTA.
-        assert 'id="features"' in r.text
-        assert 'id="faq"' in r.text
-        assert "Preguntas frecuentes" in r.text
-        assert "lp-stats" in r.text
-        assert "lp-cmd" in r.text
         # Public picker/player lives at /program now.
         r = client.get("/program")
         assert r.status_code == 200

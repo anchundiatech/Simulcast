@@ -3,421 +3,517 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simulcast — Subtítulos simultáneos en vivo para conferencias</title>
-  <meta name="description" content="Simulcast: sistema open source de transcripción y traducción en vivo a escala para conferencias. Apache-2.0, API REST + WebSockets, overlay OBS." />
+  <title>Simulcast — Tu transmisión, en todos los idiomas</title>
+  <meta name="description" content="Transcripción y traducción simultánea en tiempo real para conferencias, eventos y transmisiones en vivo. Open source, Apache-2.0." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/landing.css" />
 </head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="logo">SC</span>
-      <div>
-        <h1>Simulcast</h1>
-        <p class="tagline">Subtítulos simultáneos open source para conferencias</p>
+<body class="ls-body">
+
+  <!-- ============================== NAVBAR ============================== -->
+  <header class="ls-nav" id="top">
+    <div class="ls-nav-inner">
+      <a class="ls-brand" href="/">
+        <span class="ls-brand-mark">SC</span>
+        <span class="ls-brand-text">
+          <strong>SIMULCAST</strong>
+          <small>Real-time captions &amp; translation</small>
+        </span>
+      </a>
+
+      <nav class="ls-nav-links" id="navLinks" aria-label="Principal">
+        <a href="#producto">Producto</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#caracteristicas">Características</a>
+        <a href="#integraciones">Integraciones</a>
+        <a href="#open-source">Open Source</a>
+      </nav>
+
+      <div class="ls-nav-cta">
+        <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn primary" href="/program">Abrir Simulcast</a>
+        <button class="ls-burger" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
-    <nav class="controls">
-      <a class="btn ghost" href="#features">Features</a>
-      <a class="btn ghost" href="#api">API</a>
-      <a class="btn ghost" href="#roadmap">Roadmap</a>
-      <a class="btn ghost" href="#faq">FAQ</a>
-      <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub <span class="ico">↗</span></a>
-      <a class="btn primary" href="/program">Ver el programa</a>
-    </nav>
   </header>
 
-  <main class="lp">
-    <!-- Hero -->
-    <section class="lp-hero">
-      <div class="lp-hero-text">
-        <h2>Subtítulos en vivo para cada escenario, en paralelo, sin infraestructura propia</h2>
-        <p class="lp-lead">
-          Simulcast recibe el audio de tu conferencia (OBS por RTMP o el audio del navegador),
-          lo transcribe y traduce en tiempo real con la Gemini Live API, y lo entrega a la
-          audiencia web y al overlay de tu stream. Sistema completo, self-hosted, open source.
+  <main>
+    <!-- ============================== HERO ============================== -->
+    <section class="ls-hero" id="producto">
+      <div class="ls-hero-copy">
+        <p class="ls-eyebrow">REAL-TIME • OPEN SOURCE • MULTILINGUAL</p>
+        <h1>Tu transmisión.<br /><span class="ls-gradient-text">En todos los idiomas.</span></h1>
+        <p class="ls-lead">
+          Transcripción y traducción simultánea en tiempo real para conferencias,
+          eventos y transmisiones en vivo.
         </p>
-        <div class="lp-cta">
-          <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
-          <a class="btn" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Star en GitHub <span class="ico">↗</span></a>
-          <a class="btn ghost" href="#api">Referencia de la API</a>
+        <div class="ls-hero-actions">
+          <a class="btn primary lg" href="/operator">Iniciar transmisión</a>
+          <a class="btn lg" href="#como-funciona">Ver cómo funciona</a>
         </div>
-        <div class="lp-cmd" role="group" aria-label="Instalación">
-          <span class="lp-cmd-label">Instalación</span>
-          <code>git clone https://github.com/anchundiatech/Simulcast.git &amp;&amp; cd simulcast</code>
-          <code>cp .env.example .env &amp;&amp; docker compose up -d</code>
-        </div>
-        <ul class="lp-tags">
-          <li class="pill live">Open source · Apache-2.0</li>
-          <li class="pill live">Self-hosted</li>
-          <li class="pill">RTMP + navegador</li>
-          <li class="pill">Overlay OBS/vMix</li>
+        <ul class="ls-indicators" aria-label="Indicadores técnicos">
+          <li class="ls-ind live"><span class="ls-dot" aria-hidden="true"></span>LIVE</li>
+          <li class="ls-ind">RTMP</li>
+          <li class="ls-ind">WebSocket</li>
+          <li class="ls-ind">ES</li>
+          <li class="ls-ind">EN</li>
+          <li class="ls-ind">PT</li>
         </ul>
       </div>
-      <aside class="lp-preview" aria-hidden="true">
-        <div class="lp-preview-bar">
-          <span class="pill live">● en vivo</span>
-          <span class="muted-num">main · original + es</span>
-        </div>
-        <p class="lp-preview-line orig">Welcome to Nerdearla 2026 — thanks for joining us today.</p>
-        <p class="lp-preview-line trans">Bienvenidos a Nerdearla 2026 — gracias por acompañarnos hoy.</p>
-        <p class="lp-preview-line orig dim">We'll start with a quick overview of the agenda…</p>
-        <p class="lp-preview-line trans dim">Comenzamos con un resumen rápido de la agenda…</p>
-        <div class="lp-preview-foot">
-          <span class="pill">/program</span>
-          <span class="pill">/overlay</span>
-          <span class="pill">/api</span>
-        </div>
-      </aside>
-    </section>
 
-    <!-- Features -->
-    <section class="lp-section" id="features">
-      <h2>Todo lo que necesitás para producir subtítulos en vivo</h2>
-      <p class="lp-section-lead">
-        Desde la ingesta de audio hasta el export final: un solo sistema para el equipo de
-        producción, los escenarios y la audiencia.
-      </p>
-      <div class="lp-grid">
-        <article class="card">
-          <h3>Transcripción en vivo</h3>
-          <p class="hint">El audio del escenario se transcribe en el idioma hablado, con parciales (interim) y finales, en tiempo real.</p>
-        </article>
-        <article class="card">
-          <h3>Traducción simultánea</h3>
-          <p class="hint">Cada sesión entrega original + traducción (es / en / pt). La audiencia elige el idioma que quiere ver.</p>
-        </article>
-        <article class="card">
-          <h3>Multi-escenario</h3>
-          <p class="hint">Diez o más sesiones en paralelo, cada una con su stream, sus workers y su página de subtítulos.</p>
-        </article>
-        <article class="card">
-          <h3>Dos fuentes de audio</h3>
-          <p class="hint"><strong>OBS → RTMP</strong> para producción, o <strong>audio del navegador</strong> (pestaña o micrófono) para probar sin infraestructura.</p>
-        </article>
-        <article class="card">
-          <h3>Overlay para el stream</h3>
-          <p class="hint">La página <code>/overlay</code> es un Browser Source transparente para OBS, vMix o Streamlabs: subtítulos dentro del video.</p>
-        </article>
-        <article class="card">
-          <h3>Panel de monitoreo</h3>
-          <p class="hint"><code>/monitor</code> con estado, latencia, rates y errores en vivo — pensado para una pantalla del equipo de producción.</p>
-        </article>
-        <article class="card">
-          <h3>Export SRT / VTT / TXT</h3>
-          <p class="hint">Al final de cada charla, exportá los subtítulos por sesión e idioma desde la API para publicarlos.</p>
-        </article>
-        <article class="card">
-          <h3>API REST + WebSockets</h3>
-          <p class="hint">Todo el sistema se opera por HTTP + WS, con OpenAPI en <a href="/docs"><code>/docs</code></a>. Sin cajas negras.</p>
-        </article>
-        <article class="card">
-          <h3>Charlas largas sin cortes</h3>
-          <p class="hint">Session resumption + compresión de contexto: charlas de 30–60 min sin desconexiones, con reintentos y backoff.</p>
-        </article>
-      </div>
-    </section>
+      <div class="ls-hero-visual" aria-hidden="true">
+        <div class="ls-flow-col">
+          <div class="ls-node"><span class="ls-node-ico">🎙</span>Audio</div>
+          <span class="ls-flow-line"></span>
+          <div class="ls-node"><span class="ls-node-ico">✍</span>Transcripción</div>
+        </div>
 
-    <!-- Stats -->
-    <section class="lp-section">
-      <div class="lp-stats">
-        <div class="lp-stat">
-          <strong>10+</strong>
-          <span>escenarios en paralelo por instancia</span>
+        <div class="ls-player">
+          <div class="ls-player-top">
+            <span class="ls-badge-live"><span class="ls-dot"></span>LIVE</span>
+            <span class="ls-clock" id="lsClock">01:24:38</span>
+          </div>
+          <div class="ls-player-screen">
+            <span class="ls-screen-label">VIDEO / EVENT</span>
+            <div class="ls-player-captions">
+              <p class="ls-cap en" data-typed-hero="Welcome to the conference, everyone."></p>
+              <p class="ls-cap es" data-typed-hero="Bienvenidos a la conferencia, a todos."></p>
+            </div>
+          </div>
+          <div class="ls-player-foot">
+            <span class="ls-chip">Latency <strong id="lsLatency">420</strong>ms</span>
+            <span class="ls-chip">3 languages live</span>
+          </div>
         </div>
-        <div class="lp-stat">
-          <strong>100 ms</strong>
-          <span>chunks de audio PCM (16 kHz mono)</span>
-        </div>
-        <div class="lp-stat">
-          <strong>5</strong>
-          <span>vistas: landing, programa, operación, monitoreo y overlay</span>
-        </div>
-        <div class="lp-stat">
-          <strong>0</strong>
-          <span>API keys expuestas al navegador</span>
+
+        <div class="ls-flow-col">
+          <span class="ls-flow-line short"></span>
+          <div class="ls-out-pills">
+            <span class="ls-node out">ES</span>
+            <span class="ls-node out">EN</span>
+            <span class="ls-node out">PT</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Cómo funciona -->
-    <section class="lp-section">
-      <h2>Cómo funciona</h2>
-      <pre class="lp-code diagram">OBS / RTMP ──► MediaMTX ──► ffmpeg (PCM 16 kHz) ──┐
-                                                   ├──► Session Manager ──► Gemini Live workers
-Navegador (pestaña / micrófono) ──► WS /ws/ingest ─┘                              │
-                                                                                  ▼
-                              Audiencia ◄── WS /ws/captions ◄── EventBus
-                              (elegir sesión + idioma)</pre>
-      <div class="lp-grid">
-        <article class="card">
-          <h3>1. Entrada de audio</h3>
-          <p class="hint">RTMP desde OBS (un path por sesión: <code>rtmp://host:1935/main</code>) o el navegador enviando PCM 16 kHz mono por WebSocket.</p>
-        </article>
-        <article class="card">
-          <h3>2. Workers por sesión</h3>
-          <p class="hint">Cada sesión con traducción abre una conexión a la Gemini Live API. Arrancan con el primer audio y se detienen ~60 s después de que el stream muere (ahorra cuota).</p>
-        </article>
-        <article class="card">
-          <h3>3. Salida para la audiencia</h3>
-          <p class="hint">Un fan-out por WebSocket lleva captions a la vista web, al overlay de OBS y a cualquier cliente que se conecte. La API key nunca sale del servidor.</p>
-        </article>
+    <!-- ============================== PROBLEMA ============================== -->
+    <section class="ls-section ls-problem">
+      <div class="ls-wrap">
+        <h2>Una transmisión no debería tener un solo idioma.</h2>
+        <p class="ls-lead center">
+          Los eventos internacionales tienen una barrera invisible: el idioma. Las traducciones
+          manuales son costosas y difíciles de escalar, mientras que las soluciones cerradas pueden
+          ser difíciles de adaptar a diferentes flujos de producción.
+        </p>
+        <div class="ls-grid-3">
+          <article class="ls-card">
+            <span class="ls-card-num">01</span>
+            <h3>Un idioma limita la audiencia</h3>
+            <p>Una charla en inglés puede dejar fuera a gran parte de la audiencia.</p>
+          </article>
+          <article class="ls-card">
+            <span class="ls-card-num">02</span>
+            <h3>Muchos escenarios complican la operación</h3>
+            <p>Los eventos grandes necesitan procesar múltiples sesiones simultáneamente.</p>
+          </article>
+          <article class="ls-card">
+            <span class="ls-card-num">03</span>
+            <h3>El tiempo importa</h3>
+            <p>Los subtítulos deben aparecer mientras la persona está hablando, no varios minutos después.</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <!-- Uso -->
-    <section class="lp-section">
-      <h2>Cómo usar Simulcast</h2>
-      <div class="lp-grid">
-        <article class="card">
-          <h3>Demo en 60 segundos</h3>
-          <ol class="lp-steps">
-            <li>Creá una sesión en <a href="/operator">Operación</a> (ej. origen <code>en</code>, traducción <code>es</code>).</li>
-            <li>Marcá una o varias sesiones y tocá <strong>Compartir audio</strong> (pestaña con audio o micrófono).</li>
-            <li>Abrí <a href="/program">el programa</a>: la sesión pasa a <strong>en vivo</strong> y los subtítulos fluyen en vivo.</li>
-          </ol>
-        </article>
-        <article class="card">
-          <h3>En producción (OBS)</h3>
-          <ol class="lp-steps">
-            <li>OBS → Settings → Stream → Custom: <code>rtmp://TU_HOST:1935</code>, stream key = <code>id</code> de la sesión.</li>
-            <li>Verificá en <a href="/operator">Operación</a> que el audio esté activo.</li>
-            <li>Para quemar subtítulos en el video: Browser Source con <a href="/overlay?session=stage-1&amp;langs=original,es"><code>/overlay?session=…</code></a>.</li>
-          </ol>
-        </article>
-        <article class="card">
-          <h3>Vistas del sistema</h3>
-          <ul class="lp-links">
-            <li><a href="/program">/program</a> — grilla del programa y vista de audiencia.</li>
-            <li><a href="/operator">/operator</a> — crear sesiones y compartir audio.</li>
-            <li><a href="/monitor">/monitor</a> — panel de producción (latencia, rates, errores).</li>
-            <li><a href="/overlay?session=stage-1">/overlay</a> — subtítulos para OBS / vMix.</li>
+    <!-- ============================== SOLUCIÓN / CÓMO FUNCIONA ============================== -->
+    <section class="ls-section" id="como-funciona">
+      <div class="ls-wrap">
+        <h2>Del audio a los subtítulos en tiempo real.</h2>
+        <div class="ls-pipeline">
+          <article class="ls-pipe-card">
+            <span class="ls-pipe-step">1</span>
+            <h3>Fuente</h3>
+            <p class="ls-pipe-sub">OBS / Navegador</p>
+            <p>OBS, navegador, micrófono o audio de una pestaña.</p>
+          </article>
+          <span class="ls-pipe-arrow" aria-hidden="true"></span>
+          <article class="ls-pipe-card">
+            <span class="ls-pipe-step">2</span>
+            <h3>Ingesta</h3>
+            <p class="ls-pipe-sub">RTMP / WebSocket</p>
+            <p>Recibe el audio mediante RTMP o WebSocket.</p>
+          </article>
+          <span class="ls-pipe-arrow" aria-hidden="true"></span>
+          <article class="ls-pipe-card">
+            <span class="ls-pipe-step">3</span>
+            <h3>Procesamiento</h3>
+            <p class="ls-pipe-sub">Transcripción + Traducción</p>
+            <p>Genera transcripción y traducción simultáneamente.</p>
+          </article>
+          <span class="ls-pipe-arrow" aria-hidden="true"></span>
+          <article class="ls-pipe-card">
+            <span class="ls-pipe-step">4</span>
+            <h3>Distribución</h3>
+            <p class="ls-pipe-sub">Web / Overlay / Audiencia</p>
+            <p>Entrega captions a la audiencia y overlays para producción.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== LIVE DEMO ============================== -->
+    <section class="ls-section ls-demo">
+      <div class="ls-wrap">
+        <h2>Mira lo que está escuchando tu audiencia.</h2>
+        <div class="ls-demo-grid">
+          <article class="ls-demo-card">
+            <header>
+              <h3>Original</h3>
+              <span class="ls-ind">EN</span>
+            </header>
+            <p class="ls-demo-text" id="demoOrig">Welcome everyone to today's conference. We're going to talk about the future of open source technology.</p>
+          </article>
+          <div class="ls-demo-bridge" aria-hidden="true"><span></span></div>
+          <article class="ls-demo-card es">
+            <header>
+              <h3>Español</h3>
+              <span class="ls-ind">ES</span>
+            </header>
+            <p class="ls-demo-text" id="demoEs">Bienvenidos a la conferencia de hoy. Hablaremos sobre el futuro de la tecnología open source.</p>
+          </article>
+        </div>
+        <ul class="ls-indicators center" aria-label="Estado de la demo">
+          <li class="ls-ind live"><span class="ls-dot"></span>LIVE</li>
+          <li class="ls-ind">EN → ES</li>
+          <li class="ls-ind">Latency <strong id="lsLatency2">380</strong>ms</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================== MULTI-ESCENARIO ============================== -->
+    <section class="ls-section">
+      <div class="ls-wrap">
+        <h2>Un evento. Diez escenarios. Una sola plataforma.</h2>
+        <p class="ls-lead center">
+          Cada sesión puede tener su propio stream, procesamiento y página de subtítulos.
+        </p>
+        <div class="ls-stage-grid">
+          <article class="ls-stage">
+            <header><strong>Main Stage</strong><span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span></header>
+            <p class="ls-stage-lang">EN → ES</p>
+            <footer><span>Latency 380ms</span><span>1.2k viewers</span></footer>
+          </article>
+          <article class="ls-stage">
+            <header><strong>Workshop 01</strong><span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span></header>
+            <p class="ls-stage-lang">EN → PT</p>
+            <footer><span>Latency 420ms</span><span>240 viewers</span></footer>
+          </article>
+          <article class="ls-stage">
+            <header><strong>Workshop 02</strong><span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span></header>
+            <p class="ls-stage-lang">ES</p>
+            <footer><span>Latency 290ms</span><span>180 viewers</span></footer>
+          </article>
+          <article class="ls-stage">
+            <header><strong>Keynote</strong><span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span></header>
+            <p class="ls-stage-lang">EN → ES</p>
+            <footer><span>Latency 410ms</span><span>3.4k viewers</span></footer>
+          </article>
+          <article class="ls-stage">
+            <header><strong>Panel Hall B</strong><span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span></header>
+            <p class="ls-stage-lang">EN → ES</p>
+            <footer><span>Latency 360ms</span><span>520 viewers</span></footer>
+          </article>
+          <article class="ls-stage">
+            <header><strong>Lightning Talks</strong><span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span></header>
+            <p class="ls-stage-lang">PT → ES</p>
+            <footer><span>Latency 400ms</span><span>310 viewers</span></footer>
+          </article>
+        </div>
+        <p class="ls-counter"><strong>10+</strong> sesiones simultáneas</p>
+      </div>
+    </section>
+
+    <!-- ============================== CARACTERÍSTICAS ============================== -->
+    <section class="ls-section ls-alt" id="caracteristicas">
+      <div class="ls-wrap">
+        <h2>Todo lo necesario para una producción en vivo.</h2>
+        <div class="ls-grid-3">
+          <article class="ls-card">
+            <div class="ls-card-ico" aria-hidden="true">▤</div>
+            <h3>Transcripción en tiempo real</h3>
+            <p>Captions originales con actualizaciones parciales y finales.</p>
+          </article>
+          <article class="ls-card">
+            <div class="ls-card-ico" aria-hidden="true">文A</div>
+            <h3>Traducción simultánea</h3>
+            <p>Genera traducciones en diferentes idiomas mientras ocurre la transmisión.</p>
+          </article>
+          <article class="ls-card">
+            <div class="ls-card-ico" aria-hidden="true">▦</div>
+            <h3>Multi-escenario</h3>
+            <p>Procesa múltiples sesiones de manera independiente.</p>
+          </article>
+          <article class="ls-card">
+            <div class="ls-card-ico" aria-hidden="true">⇄</div>
+            <h3>RTMP + WebSocket</h3>
+            <p>Compatible con flujos profesionales y pruebas directamente desde el navegador.</p>
+          </article>
+          <article class="ls-card">
+            <div class="ls-card-ico" aria-hidden="true">▭</div>
+            <h3>Overlay para OBS</h3>
+            <p>Utiliza un Browser Source transparente para mostrar subtítulos sobre el video.</p>
+          </article>
+          <article class="ls-card">
+            <div class="ls-card-ico" aria-hidden="true">◔</div>
+            <h3>Monitoreo en vivo</h3>
+            <p>Visualiza latencia, errores, captions por minuto y estado de cada sesión.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== INTEGRACIONES ============================== -->
+    <section class="ls-section" id="integraciones">
+      <div class="ls-wrap">
+        <h2>Funciona con tu flujo de producción.</h2>
+        <p class="ls-lead center">
+          No necesitas cambiar tu infraestructura de producción. Simulcast se integra en el flujo
+          que ya utilizas.
+        </p>
+        <ul class="ls-integrations">
+          <li class="ls-int-tile">OBS</li>
+          <li class="ls-int-tile">vMix</li>
+          <li class="ls-int-tile">Streamlabs</li>
+          <li class="ls-int-tile">RTMP</li>
+          <li class="ls-int-tile">WebSocket</li>
+        </ul>
+        <div class="ls-chain" aria-label="Flujo de integración">
+          <span class="ls-chain-node">OBS</span>
+          <span class="ls-chain-arrow" aria-hidden="true"></span>
+          <span class="ls-chain-node">RTMP</span>
+          <span class="ls-chain-arrow" aria-hidden="true"></span>
+          <span class="ls-chain-node hl">SIMULCAST</span>
+          <span class="ls-chain-arrow" aria-hidden="true"></span>
+          <span class="ls-chain-node">Subtitles / Translation</span>
+          <span class="ls-chain-arrow" aria-hidden="true"></span>
+          <span class="ls-chain-node">Audience</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== AUDIENCIA ============================== -->
+    <section class="ls-section ls-alt">
+      <div class="ls-wrap">
+        <h2>La audiencia solo tiene que elegir su idioma.</h2>
+        <div class="ls-mock ls-audience">
+          <header class="ls-mock-bar">
+            <span class="ls-badge-live sm"><span class="ls-dot"></span>LIVE</span>
+            <strong>Main Stage</strong>
+          </header>
+          <div class="ls-lang-tabs" role="tablist" aria-label="Idioma">
+            <button role="tab" aria-selected="false" data-lang="original">Original</button>
+            <button role="tab" aria-selected="true" class="active" data-lang="es">Español</button>
+            <button role="tab" aria-selected="false" data-lang="en">English</button>
+            <button role="tab" aria-selected="false" data-lang="pt">Português</button>
+          </div>
+          <p class="ls-audience-caption" id="audCaption" aria-live="polite">
+            Bienvenidos a la conferencia. Hoy vamos a hablar sobre tecnología open source.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== OPERADORES ============================== -->
+    <section class="ls-section">
+      <div class="ls-wrap">
+        <h2>Controla todo desde un solo lugar.</h2>
+        <div class="ls-mock ls-operator">
+          <div class="ls-kpis">
+            <div class="ls-kpi"><span>Sessions</span><strong>10</strong></div>
+            <div class="ls-kpi"><span>Live</span><strong>7</strong></div>
+            <div class="ls-kpi"><span>Latency</span><strong><span id="lsLatency3">420</span>ms</strong></div>
+            <div class="ls-kpi"><span>Captions/min</span><strong>184</strong></div>
+            <div class="ls-kpi bad"><span>Errors</span><strong>2</strong></div>
+          </div>
+          <ul class="ls-sess-list">
+            <li>
+              <span class="ls-sess-name"><span class="ls-dot"></span>Main Stage</span>
+              <span class="ls-sess-state live">LIVE</span>
+              <span class="ls-sess-meta">EN → ES · 380ms · 1.2k</span>
+            </li>
+            <li>
+              <span class="ls-sess-name"><span class="ls-dot"></span>Workshop 01</span>
+              <span class="ls-sess-state live">LIVE</span>
+              <span class="ls-sess-meta">EN → PT · 420ms · 240</span>
+            </li>
+            <li>
+              <span class="ls-sess-name"><span class="ls-dot"></span>Workshop 02</span>
+              <span class="ls-sess-state live">LIVE</span>
+              <span class="ls-sess-meta">ES · 290ms · 180</span>
+            </li>
+            <li>
+              <span class="ls-sess-name"><span class="ls-dot"></span>Keynote</span>
+              <span class="ls-sess-state live">LIVE</span>
+              <span class="ls-sess-meta">EN → ES · 410ms · 3.4k</span>
+            </li>
           </ul>
-        </article>
+          <footer class="ls-operator-foot">
+            <p class="ls-tech-note">Ingesta: RTMP — Active</p>
+            <a class="btn primary lg" href="/operator">Iniciar transmisión</a>
+          </footer>
+        </div>
       </div>
     </section>
 
-    <!-- API -->
-    <section class="lp-section" id="api">
-      <h2>Referencia de la API</h2>
-      <p class="hint">
-        Todo el sistema se opera por HTTP + WebSockets. La misma instancia expone
-        <a href="/docs">OpenAPI en <code>/docs</code></a> (Swagger) para probarla en el navegador.
-        Los endpoints de escritura hoy no llevan auth (pensados para LAN/VPN del evento):
-        la autenticación por sesión está en el <a href="#roadmap">roadmap</a>.
-      </p>
+    <!-- ============================== OPEN SOURCE ============================== -->
+    <section class="ls-section ls-alt" id="open-source">
+      <div class="ls-wrap">
+        <h2>Infraestructura abierta para eventos abiertos.</h2>
+        <p class="ls-lead center">
+          Simulcast está construido con tecnologías abiertas y pensado para poder adaptarse a
+          diferentes necesidades de producción.
+        </p>
+        <ul class="ls-tech-chips" aria-label="Tecnologías">
+          <li>Open Source</li>
+          <li>Docker</li>
+          <li>FastAPI</li>
+          <li>WebSocket</li>
+          <li>RTMP</li>
+          <li>MediaMTX</li>
+          <li>Gemini Live</li>
+        </ul>
+        <div class="ls-center-actions">
+          <a class="btn primary lg" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Ver en GitHub</a>
+          <a class="btn lg" href="https://github.com/anchundiatech/Simulcast#quickstart-desarrollo" target="_blank" rel="noopener">Ejecutar localmente</a>
+        </div>
+      </div>
+    </section>
 
-      <h3>Endpoints REST</h3>
-      <table class="table lp-table">
-        <thead>
-          <tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/health</code></td><td>Estado general: sesiones, rates, uptime, modelos, Gemini configurado</td></tr>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/monitor</code></td><td>Snapshot de monitoreo: sesiones + métricas + errores recientes</td></tr>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/monitor/errors</code></td><td>Últimos errores (parámetro <code>?limit=</code>)</td></tr>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions</code></td><td>Lista de sesiones con workers, ingest y métricas</td></tr>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions/{id}</code></td><td>Snapshot de una sesión (404 si no existe)</td></tr>
-          <tr><td><span class="pill warn">POST</span></td><td><code>/api/sessions</code></td><td>Crear sesión (201 · 429 si se supera el máximo · 422 si es inválida)</td></tr>
-          <tr><td><span class="pill warn">PUT</span></td><td><code>/api/sessions/{id}</code></td><td>Reconfigurar (reinicia sus workers)</td></tr>
-          <tr><td><span class="pill err">DELETE</span></td><td><code>/api/sessions/{id}</code></td><td>Eliminar sesión (204)</td></tr>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions/{id}/captions?lang=es</code></td><td>Historial de captions (<code>lang=all</code> para todos)</td></tr>
-          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions/{id}/export.{fmt}?lang=…</code></td><td>Export: <code>srt</code> · <code>vtt</code> · <code>txt</code></td></tr>
-        </tbody>
-      </table>
+    <!-- ============================== CÓMO EMPEZAR ============================== -->
+    <section class="ls-section" id="empezar">
+      <div class="ls-wrap">
+        <h2>Empieza en minutos.</h2>
+        <div class="ls-grid-3">
+          <article class="ls-card step">
+            <span class="ls-card-num">01</span>
+            <h3>Crea una sesión</h3>
+            <p>Define el nombre y los idiomas.</p>
+          </article>
+          <article class="ls-card step">
+            <span class="ls-card-num">02</span>
+            <h3>Conecta tu audio</h3>
+            <p>Usa OBS mediante RTMP o comparte audio directamente desde el navegador.</p>
+          </article>
+          <article class="ls-card step">
+            <span class="ls-card-num">03</span>
+            <h3>Empieza la transmisión</h3>
+            <p>La audiencia recibe subtítulos y traducciones en tiempo real.</p>
+          </article>
+        </div>
+        <div class="ls-center-actions">
+          <a class="btn primary lg" href="/operator">Iniciar transmisión</a>
+        </div>
+      </div>
+    </section>
 
-      <div class="lp-grid">
-        <article class="card">
-          <h3>Crear una sesión</h3>
-          <pre class="lp-code">curl -X POST http://localhost:8000/api/sessions \
+    <!-- ============================== API (secundaria) ============================== -->
+    <section class="ls-section ls-alt" id="api">
+      <div class="ls-wrap">
+        <h2>Referencia de la API</h2>
+        <p class="ls-lead center">
+          Todo el sistema se opera por HTTP + WebSockets, con OpenAPI en
+          <a href="/docs"><code>/docs</code></a>. Los endpoints de escritura hoy no llevan auth
+          (LAN/VPN del evento): la <strong>auth por sesión</strong> está en el roadmap.
+        </p>
+        <div class="ls-grid-3">
+          <article class="ls-card mono">
+            <h3>REST</h3>
+            <ul class="ls-api-list">
+              <li><span class="pill live">GET</span> <code>/api/health</code></li>
+              <li><span class="pill live">GET</span> <code>/api/monitor</code></li>
+              <li><span class="pill live">GET</span> <code>/api/sessions</code></li>
+              <li><span class="pill warn">POST</span> <code>/api/sessions</code></li>
+              <li><span class="pill warn">PUT</span> <code>/api/sessions/{id}</code></li>
+              <li><span class="pill err">DELETE</span> <code>/api/sessions/{id}</code></li>
+              <li><span class="pill live">GET</span> <code>/api/sessions/{id}/captions</code></li>
+              <li><span class="pill live">GET</span> <code>/api/sessions/{id}/export.vtt</code></li>
+            </ul>
+          </article>
+          <article class="ls-card mono">
+            <h3>WebSockets</h3>
+            <ul class="ls-api-list">
+              <li><code>/ws/captions/{id}</code> — stream de subtítulos</li>
+              <li><code>/ws/ingest/{id}</code> — audio entrante</li>
+              <li><code>/ws/monitor</code> — snapshots de producción</li>
+            </ul>
+          </article>
+          <article class="ls-card mono">
+            <h3>Crear sesión</h3>
+            <pre class="ls-code">curl -X POST /api/sessions \
   -H 'Content-Type: application/json' \
-  -d '{
-    "id": "main",
-    "name": "Main Stage",
-    "source_language": "en",
-    "output_languages": ["original", "es"]
-  }'</pre>
-          <p class="hint">Campos: <code>id</code> (slug), <code>name</code>, <code>source_language</code> (<code>en</code> | <code>es</code> | <code>pt</code> | <code>auto</code>), <code>output_languages</code> (siempre arranca con <code>original</code>).</p>
-        </article>
-        <article class="card">
-          <h3>Estado y salud</h3>
-          <pre class="lp-code">curl -s http://localhost:8000/api/health | jq
-curl -s http://localhost:8000/api/sessions | jq '.sessions[].config.id'</pre>
-          <p class="hint">Ideal para scripts y alertas: <code>gemini_configured</code>, <code>live_sessions</code>, <code>captions_per_min</code>, <code>errors_total</code>, <code>uptime_s</code>.</p>
-        </article>
-        <article class="card">
-          <h3>Captions y export</h3>
-          <pre class="lp-code">curl 'http://localhost:8000/api/sessions/main/captions?lang=es'
-curl -OJ 'http://localhost:8000/api/sessions/main/export.vtt?lang=es'</pre>
-          <p class="hint">El historial vive en memoria: consultalo durante el evento o exportá al final de cada charla.</p>
-        </article>
-      </div>
-
-      <h3>WebSockets</h3>
-      <table class="table lp-table">
-        <thead>
-          <tr><th>Ruta</th><th>Dirección</th><th>Qué hace</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><code>/ws/captions/{id}?lang=es</code></td><td>audiencia</td><td>Stream de subtítulos (<code>lang=all</code> para todos los idiomas). Primer mensaje <code>hello</code> con el estado de la sesión.</td></tr>
-          <tr><td><code>/ws/ingest/{id}</code></td><td>operador</td><td>Audio entrante: frames binarios PCM s16le mono 16 kHz de 100 ms (3200 bytes). Responde <code>{"type":"ready"}</code> al abrir.</td></tr>
-          <tr><td><code>/ws/monitor</code></td><td>panel</td><td>Snapshot inicial + actualizaciones de estado y heartbeat cada 3 s.</td></tr>
-        </tbody>
-      </table>
-
-      <article class="card">
-        <h3>Formato de un caption (JSON)</h3>
-        <pre class="lp-code">{
-  "type": "caption",
-  "session": "main",
-  "lang": "es",
-  "text": "Hola, bienvenidos a la conferencia",
-  "final": true,
-  "t": 1769000000.123,
-  "id": "main:es:42:ab12cd"
-}</pre>
-        <p class="hint">Los eventos con <code>final:false</code> son parciales (interim): la UI los reemplaza cuando llega el final con el mismo <code>id</code>.</p>
-      </article>
-    </section>
-
-    <!-- Open source -->
-    <section class="lp-section">
-      <h2>Proyecto open source</h2>
-      <div class="lp-grid">
-        <article class="card">
-          <h3>Licencia Apache-2.0</h3>
-          <p class="hint">Aprobada por la Open Source Initiative. Usalo, modificalo y distribuilo en tu evento — incluso comercialmente — conservando la licencia y el copyright.</p>
-        </article>
-        <article class="card">
-          <h3>Self-hosted, sin vendor lock-in</h3>
-          <p class="hint">Corre en tu servidor (Docker o Python). Tu <code>GEMINI_API_KEY</code> nunca sale de tu instancia y los datos del evento quedan donde vos los pongas.</p>
-        </article>
-        <article class="card">
-          <h3>Transparente por diseño</h3>
-          <p class="hint">Todo el sistema es HTTP + WebSockets documentado arriba, con OpenAPI en <a href="/docs"><code>/docs</code></a>. Sin cajas negras: podés leer el código de cada worker.</p>
-        </article>
-        <article class="card">
-          <h3>Contribuciones bienvenidas</h3>
-          <p class="hint">Issues y pull requests en <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">github.com/anchundiatech/Simulcast</a>. Hecho para la Vibeathon de Nerdearla.</p>
-        </article>
+  -d '{"id":"main","name":"Main Stage",
+       "source_language":"en",
+       "output_languages":["original","es"]}'</pre>
+          </article>
+        </div>
       </div>
     </section>
 
-    <!-- Roadmap -->
-    <section class="lp-section" id="roadmap">
-      <h2>Roadmap</h2>
-      <p class="lp-section-lead">Lo que ya está y lo que viene. El orden es orientativo y puede cambiar según la comunidad.</p>
-      <ul class="lp-road">
-        <li class="done"><span class="pill live">hecho</span> Transcripción + traducción en vivo multi-sesión (RTMP y navegador)</li>
-        <li class="done"><span class="pill live">hecho</span> Vista de programa público, overlay OBS/vMix y panel de monitoreo</li>
-        <li class="done"><span class="pill live">hecho</span> Export SRT / VTT / TXT por sesión e idioma</li>
-        <li><span class="pill warn">próximo</span> Glosario de términos del evento vía <code>custom_vocabulary</code></li>
-        <li><span class="pill warn">próximo</span> Latencia p50/p95 y costos estimados en el panel de monitoreo</li>
-        <li><span class="pill warn">próximo</span> <strong>Auth por sesión</strong> — tokens para <code>/ws/ingest</code> y la API de operación, y tokens efímeros de Gemini para clientes (hoy la API key vive solo en el servidor y el ingest debe restringirse por red; ver <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> §8)</li>
-        <li><span class="pill">después</span> Portugués y más idiomas de salida (workers de translate adicionales)</li>
-        <li><span class="pill">después</span> Caller SRT/ffmpeg para quemar subtítulos sin Browser Source</li>
-      </ul>
-    </section>
-
-    <!-- Despliegue -->
-    <section class="lp-section">
-      <h2>Despliegue</h2>
-      <div class="lp-grid">
-        <article class="card">
-          <h3>Docker (recomendado)</h3>
-          <pre class="lp-code">git clone &lt;repo-url&gt; simulcast &amp;&amp; cd simulcast
-cp .env.example .env            # GEMINI_API_KEY=...
-cp sessions.example.yaml sessions.yaml
-docker compose up -d --build
-curl -s http://localhost:8000/api/health | jq</pre>
-        </article>
-        <article class="card">
-          <h3>Requisitos</h3>
-          <ul class="lp-links">
-            <li>Una API key de <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>.</li>
-            <li>Python 3.11+ o Docker; <code>ffmpeg</code> + MediaMTX solo si usás RTMP.</li>
-            <li>2 vCPU / 4 GB RAM alcanzan para la demo; el peso lo lleva la Gemini Live API.</li>
-            <li>Guía completa: <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> (TLS, MediaMTX, overlay, seguridad).</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="lp-section" id="faq">
-      <h2>Preguntas frecuentes</h2>
-      <p class="lp-section-lead">
-        ¿No está tu duda? Abrí un issue en
-        <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a>.
-      </p>
-      <div class="lp-faq">
-        <details>
-          <summary>¿Necesito una API key de Gemini?</summary>
-          <p class="hint">Sí, se consigue gratis en <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> y va solo en el servidor (<code>.env</code>). El navegador nunca la ve.</p>
-        </details>
-        <details>
-          <summary>¿Puedo probarlo sin OBS ni servidor?</summary>
-          <p class="hint">Sí. Andá a <a href="/operator">/operator</a>, creá una sesión y usá <strong>Compartir audio</strong> (pestaña con un video en inglés o el micrófono). La demo completa tarda 60 segundos.</p>
-        </details>
-        <details>
-          <summary>¿Cuántas sesiones soporta en paralelo?</summary>
-          <p class="hint">El límite configurable es <code>SIMULCAST_MAX_SESSIONS</code> (default 20) y 10 escenarios en vivo es cómodo. El cuello de botella habitual es la cuota de la Gemini Live API, no la CPU local.</p>
-        </details>
-        <details>
-          <summary>¿Es open source de verdad?</summary>
-          <p class="hint">Sí: licencia <strong>Apache-2.0</strong> aprobada por la OSI, repo público, self-hosted y sin vendor lock-in. Podés modificarlo y hasta usarlo comercialmente.</p>
-        </details>
-        <details>
-          <summary>¿Y la autenticación?</summary>
-          <p class="hint">Hoy se protege por red (firewall / VPN / LAN del venue) tal como explica <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> §8. La <strong>auth por sesión con tokens</strong> está en el <a href="#roadmap">roadmap</a>.</p>
-        </details>
-        <details>
-          <summary>¿Cuánto cuesta?</summary>
-          <p class="hint">El software es gratis (Apache-2.0). Pagás solo lo que consumas de la Gemini Live API al <a href="https://aistudio.google.com/usage" target="_blank" rel="noopener">Google AI Studio → Usage</a>: cada sesión en aire es una conexión.</p>
-        </details>
-        <details>
-          <summary>¿Funciona con vMix o Streamlabs?</summary>
-          <p class="hint">Sí: <code>/overlay</code> es una página transparente pensada como Browser Source de OBS, vMix, Streamlabs u cualquier tool que cargue HTML.</p>
-        </details>
-      </div>
-    </section>
-
-    <!-- CTA final -->
-    <section class="lp-cta-block">
-      <h2>Poné subtítulos en vivo en tu próximo evento</h2>
-      <p class="lp-lead">
-        Levantalo con Docker en un servidor, compartí la URL del programa y que nadie se pierda
-        una charla — en el idioma que prefiera.
-      </p>
-      <div class="lp-cta">
-        <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
-        <a class="btn" href="/operator">Compartir audio</a>
-        <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Código en GitHub <span class="ico">↗</span></a>
+    <!-- ============================== CTA FINAL ============================== -->
+    <section class="ls-cta-final">
+      <div class="ls-wrap">
+        <h2>Haz que tu próximo evento hable todos los idiomas.</h2>
+        <p>Transcripción y traducción simultánea, diseñada para producción en vivo.</p>
+        <div class="ls-center-actions">
+          <a class="btn primary lg" href="/operator">Iniciar transmisión</a>
+          <a class="btn on-dark lg" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Explorar GitHub</a>
+        </div>
+        <ul class="ls-indicators center on-dark" aria-label="Indicadores">
+          <li class="ls-ind">REAL-TIME</li>
+          <li class="ls-ind">OPEN SOURCE</li>
+          <li class="ls-ind">MULTILINGUAL</li>
+        </ul>
       </div>
     </section>
   </main>
 
-  <footer class="footer lp-footer">
-    <div class="lp-foot-col">
-      <strong>Simulcast</strong>
-      <span>Sistema open source de subtítulos simultáneos para conferencias.</span>
-      <span class="muted-num">Apache-2.0 · Vibeathon de Nerdearla</span>
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="ls-footer">
+    <div class="ls-wrap ls-footer-grid">
+      <div class="ls-footer-brand">
+        <a class="ls-brand" href="/">
+          <span class="ls-brand-mark">SC</span>
+          <span class="ls-brand-text"><strong>SIMULCAST</strong></span>
+        </a>
+        <p>Real-time captions and translation for live events.</p>
+      </div>
+      <nav class="ls-footer-col" aria-label="Producto">
+        <strong>Producto</strong>
+        <a href="#caracteristicas">Características</a>
+        <a href="#integraciones">Integraciones</a>
+        <a href="#open-source">Open Source</a>
+        <a href="/program">Programa</a>
+      </nav>
+      <nav class="ls-footer-col" aria-label="Recursos">
+        <strong>Recursos</strong>
+        <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a>
+        <a href="#api">Documentación</a>
+        <a href="/docs">OpenAPI</a>
+        <a href="/operator">Operación</a>
+      </nav>
     </div>
-    <div class="lp-foot-col">
-      <strong>Producto</strong>
-      <a href="/">Inicio</a>
-      <a href="/program">Programa</a>
-      <a href="/operator">Operación</a>
-      <a href="/monitor">Monitoreo</a>
-      <a href="/overlay?session=stage-1">Overlay OBS</a>
-    </div>
-    <div class="lp-foot-col">
-      <strong>Desarrolladores</strong>
-      <a href="#api">Referencia de la API</a>
-      <a href="/docs">OpenAPI /docs</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a>
-      <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a>
+    <div class="ls-wrap ls-footer-bottom">
+      <span>Built for accessible live events.</span>
+      <span>Apache-2.0 · <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">github.com/anchundiatech/Simulcast</a></span>
     </div>
   </footer>
+
+  <script src="/static/landing.js"></script>
 </body>
 </html>
