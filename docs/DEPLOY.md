@@ -197,7 +197,3 @@ captions.tuevento.com {
 | Workers `error` | Key inválida o cuota | `/monitor`, `/api/health`, logs `docker compose logs -f` |
 | Subtítulos lentos | Interim deshabilitado / red | Revisá logs; el UI usa interims para latencia |
 | Sesión corta a los ~10 min | Falta resumption | Ya está habilitado; mirar logs `go_away` |
-
-## Contacto / comunidad
-
-Para dudas sobre la Vibeathon de Nerdearla: Discord `#nerdearla-vibeathon`.
