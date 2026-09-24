@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulcast — Ingesta / Operación</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="operator">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">OP</span>
+      <div>
+        <h1>Simulcast · Operación</h1>
+        <p class="tagline">Ingesta de audio desde el navegador + estado de sesiones</p>
+      </div>
+    </div>
+    <div class="controls">
+      <span id="apiBadge" class="badge badge-off">api —</span>
+      <a class="btn ghost" href="/monitor">Monitoreo ↗</a>
+      <button id="refreshBtn" class="btn ghost">Actualizar</button>
+    </div>
+  </header>
+
+  <main class="op-grid">
+    <section class="card">
+      <h2>Nueva sesión</h2>
+      <form id="createForm" class="form">
+        <label class="field">
+          <span>Nombre</span>
+          <input id="fName" required placeholder="Main Stage" />
+        </label>
+        <label class="field">
+          <span>Id (slug)</span>
+          <input id="fId" placeholder="stage-1" pattern="[a-z0-9][a-z0-9_-]*" />
+        </label>
+        <label class="field">
+          <span>Idioma origen</span>
+          <select id="fSource">
+            <option value="en">Inglés (en)</option>
+            <option value="es">Español (es)</option>
+            <option value="pt">Portugués (pt)</option>
+            <option value="auto">Auto-detección</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Traducción a</span>
+          <select id="fTarget">
+            <option value="es">Español (es)</option>
+            <option value="en">Inglés (en)</option>
+            <option value="none">Solo original</option>
+          </select>
+        </label>
+        <button class="btn primary" type="submit">Crear / actualizar</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Ingesta desde navegador</h2>
+      <p class="hint">
+        Comparte una pestaña con audio (o el micrófono) y Simulcast la envía como PCM 16 kHz.
+        Para producción usá OBS → RTMP.
+      </p>
+      <label class="field">
+        <span>Sesión</span>
+        <select id="ingestSession"></select>
+      </label>
+      <div class="row">
+        <button id="startBtn" class="btn primary">▶ Iniciar ingesta</button>
+        <button id="stopBtn" class="btn danger" disabled>■ Detener</button>
+        <a id="viewLink" class="btn ghost" href="/" target="_blank">Ver audiencia ↗</a>
+      </div>
+      <div class="row stats">
+        <div><dt>Enviado</dt><dd id="statSent">0 MB</dd></div>
+        <div><dt>Chunks</dt><dd id="statChunks">0</dd></div>
+        <div><dt>Estado WS</dt><dd id="statWs">idle</dd></div>
+      </div>
+      <div class="meter"><div id="audioMeter" class="meter-fill"></div></div>
+      <p id="ingestError" class="error" hidden></p>
+    </section>
+
+    <section class="card wide">
+      <h2>Sesiones</h2>
+      <table class="table" id="sessionsTable">
+        <thead>
+          <tr>
+            <th>Sesión</th>
+            <th>Origen</th>
+            <th>Salidas</th>
+            <th>Estado</th>
+            <th>Ingesta</th>
+            <th>Workers</th>
+            <th>Espectadores</th>
+            <th>Errores</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="/static/operator.js"></script>
+</body>
+</html>
