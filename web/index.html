@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulcast — Subtítulos en vivo</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- Programa / selección de casts -->
+  <div id="viewPicker" class="view">
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">CC</span>
+        <div>
+          <h1>Simulcast</h1>
+          <p class="tagline">Subtítulos en vivo · elegí una sesión o cast</p>
+        </div>
+      </div>
+      <div class="controls">
+        <span id="pickerStatus" class="badge badge-off">cargando…</span>
+        <label class="field">
+          <span>Filtrar</span>
+          <input id="pickerFilter" type="search" placeholder="nombre o id…" autocomplete="off" />
+        </label>
+      </div>
+    </header>
+
+    <main class="picker-main">
+      <section class="picker-hero">
+        <h2>Programa en vivo</h2>
+        <p class="hint">
+          Seleccioná una sesión para ver la transcripción y traducción en tiempo real.
+          Las sesiones <span class="pill live">en vivo</span> ya están emitiendo subtítulos.
+        </p>
+      </section>
+      <section id="sessionGrid" class="session-grid" aria-live="polite">
+        <p class="hint">Cargando sesiones…</p>
+      </section>
+      <p id="pickerEmpty" class="hint" hidden>
+        No hay sesiones todavía.
+        <a href="/operator" target="_blank">Crear una en Operación →</a>
+      </p>
+    </main>
+
+    <footer class="footer">
+      <span>Simulcast — subtítulos simultáneos open source</span>
+      <span>
+        <a href="/operator" target="_blank">Operación</a>
+        ·
+        <a href="/monitor" target="_blank">Monitoreo</a>
+      </span>
+    </footer>
+  </div>
+
+  <!-- Vista de subtítulos -->
+  <div id="viewPlayer" class="view" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <a id="backBtn" class="btn ghost" href="/" title="Volver al programa">←</a>
+        <div>
+          <h1 id="playerTitle">Simulcast</h1>
+          <p class="tagline" id="playerSubtitle">Subtítulos en vivo</p>
+        </div>
+      </div>
+      <div class="controls">
+        <label class="field">
+          <span>Sesión</span>
+          <select id="sessionSelect"></select>
+        </label>
+        <label class="field">
+          <span>Idioma</span>
+          <select id="langSelect"></select>
+        </label>
+        <span id="connBadge" class="badge badge-off">desconectado</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="stage">
+        <div id="liveCaption" class="live-caption" aria-live="polite"></div>
+        <div id="history" class="history"></div>
+      </section>
+
+      <aside class="meta">
+        <div class="card">
+          <h2 id="sessionName">—</h2>
+          <dl id="sessionMeta">
+            <div><dt>Estado</dt><dd id="mStatus">—</dd></div>
+            <div><dt>Espectadores</dt><dd id="mViewers">—</dd></div>
+            <div><dt>Último caption</dt><dd id="mLast">—</dd></div>
+            <div><dt>Idiomas</dt><dd id="mLangs">—</dd></div>
+          </dl>
+        </div>
+        <div class="card">
+          <h3>Cómo se ve esto</h3>
+          <p class="hint">
+            <strong>original</strong> muestra la transcripción en el idioma hablado.
+            Los demás idiomas son traducciones en tiempo real.
+          </p>
+          <p class="hint muted">API open source · Apache-2.0</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <span>Simulcast — solución open source de subtítulos simultáneos para conferencias</span>
+      <span>
+        <a href="/">Programa</a>
+        ·
+        <a href="/operator" target="_blank">Operación</a>
+        ·
+        <a href="/monitor" target="_blank">Monitoreo</a>
+      </span>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
