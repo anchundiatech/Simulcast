@@ -12,17 +12,17 @@
     ------------
     session   Session id                         (default: stage-1)
     lang      original | es | en | pt | all      (default: original)
-              "all" (or langs=a,b) shows two lines: primary on top,
-              secondary below — typical EN + ES conference layout.
+              "all" (or langs=a,b) shows two lines: original on top,
+              translation below (primary color) — conference layout.
     langs     Explicit dual languages, e.g. "original,es"
     pos       bottom | top                       (default: bottom)
     align     center | left | right              (default: center)
     size      Base font size in px               (default: 36)
     hold      Seconds to keep a line visible     (default: 6)
     gap       Gap between dual lines in em       (default: 0.15)
-    bg        Background alpha 0..1              (default: 0.72)
-    fg        Text color (CSS)                   (default: #ffffff)
-    accent    Secondary line color               (default: #a5f3fc)
+    bg        Background alpha 0..1              (default: 0 = transparent bar)
+    fg        Text color (CSS)                   (default: #ffffff, editable)
+    accent    Secondary/translation line color    (default: #069ddb primary blue)
     radius    Border radius in px                (default: 8)
     maxchars  Wrap hint: max characters/line     (default: 64)
     badge     0 to hide the session/lang badge   (default: 0 for OBS)
@@ -36,8 +36,8 @@
   <style>
     :root {
       --fg: #ffffff;
-      --accent: #a5f3fc;
-      --bg-alpha: 0.72;
+      --accent: #069ddb;
+      --bg-alpha: 0;
       --radius: 8px;
       --font-size: 36px;
       --gap: 0.15em;
@@ -232,9 +232,9 @@
           ? params.get("align") : "center",
         size: clampInt(params.get("size"), 14, 96, 36),
         hold: clampFloat(params.get("hold"), 1, 60, 6),
-        bg: clampFloat(params.get("bg"), 0, 1, 0.72),
+        bg: clampFloat(params.get("bg"), 0, 1, 0),
         fg: params.get("fg") || "#ffffff",
-        accent: params.get("accent") || "#a5f3fc",
+        accent: params.get("accent") || "#069ddb",
         radius: clampInt(params.get("radius"), 0, 40, 8),
         maxChars: clampInt(params.get("maxchars"), 16, 200, 64),
         badge: params.get("badge") === "1",

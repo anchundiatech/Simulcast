@@ -109,8 +109,8 @@ Simulcast incluye una página transparente **`/overlay`** pensada como
 | `align` | `center` | `left` \| `center` \| `right` |
 | `size` | `36` | Tamaño de fuente px (14–96) |
 | `hold` | `6` | Segundos que queda el texto visible |
-| `bg` | `0.72` | Opacidad del fondo 0–1 |
-| `fg` / `accent` | `#fff` / `#a5f3fc` | Color primario / secundario |
+| `bg` | `0` | Opacidad del fondo 0–1 (**0 = barra transparente**) |
+| `fg` / `accent` | `#fff` / `#069ddb` | Color original / traducción (primario) |
 | `radius` | `8` | Border-radius px |
 | `style` | `bar` | `bar` (caja) \| `clean` (solo texto+shadow) |
 | `badge` | `0` | `1` muestra chip sesión·idioma |
