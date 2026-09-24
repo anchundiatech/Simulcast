@@ -162,6 +162,7 @@ uvicorn server.main:app --host 0.0.0.0 --port 8000
 2. **API key** solo en el servidor (ya lo es por diseño).
 3. **Audio en vivo**: restringí `/ws/ingest` y el RTMP a la red del venue (firewall / VPN / `allow` en MediaMTX).
 4. **Rate limit** opcional en `/api/*` si es público.
+5. **Auth por sesión** (tokens para `/ws/ingest` y la API de operación) está en el roadmap; hasta entonces, tratá los endpoints de escritura como internos.
 
 Ejemplo mínimo con Caddy:
 

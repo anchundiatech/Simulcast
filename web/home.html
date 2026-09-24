@@ -21,26 +21,31 @@
       <a class="btn ghost" href="/operator">Operación</a>
       <a class="btn ghost" href="/monitor">Monitoreo</a>
       <a class="btn ghost" href="#api">API</a>
+      <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub <span class="ico">↗</span></a>
     </nav>
   </header>
 
   <main class="lp">
     <!-- Hero -->
     <section class="lp-hero">
-      <h2>Transcripción y traducción en vivo, en cada escenario, al mismo tiempo</h2>
+      <h2>El sistema open source de subtítulos simultáneos para conferencias</h2>
       <p class="lp-lead">
-        Simulcast recibe el audio de un escenario (OBS por RTMP o el audio de tu navegador) y produce
-        subtítulos en tiempo real: el idioma original y una traducción, para toda la audiencia.
-        Diseñado para eventos con decenas de sesiones en paralelo.
+        Simulcast es un sistema completo —no una librería— para producir subtítulos en vivo en
+        decenas de escenarios en paralelo: recibe el audio de un escenario (OBS por RTMP o el audio
+        de tu navegador), lo transcribe y traduce en tiempo real con la Gemini Live API, y lo
+        entrega a la audiencia web, al overlay de OBS y a cualquier cliente por API.
+        Código abierto bajo licencia Apache-2.0: self-hosted, sin vendor lock-in.
       </p>
       <div class="lp-cta">
         <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
         <a class="btn" href="/operator">Compartir audio</a>
         <a class="btn ghost" href="#api">Referencia de la API <span class="ico">↓</span></a>
+        <a class="btn ghost" href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">Ver código <span class="ico">↗</span></a>
       </div>
       <ul class="lp-tags">
-        <li class="pill live">Apache-2.0</li>
-        <li class="pill live">Gemini Live API</li>
+        <li class="pill live">Open source · Apache-2.0</li>
+        <li class="pill live">Self-hosted</li>
+        <li class="pill">Gemini Live API</li>
         <li class="pill">RTMP + navegador</li>
         <li class="pill">Overlay OBS/vMix</li>
         <li class="pill">Multi-sesión</li>
@@ -141,6 +146,8 @@ Navegador (pestaña / micrófono) ──► WS /ws/ingest ─┘                
       <p class="hint">
         Todo el sistema se opera por HTTP + WebSockets. La misma instancia expone
         <a href="/docs">OpenAPI en <code>/docs</code></a> (Swagger) para probarla en el navegador.
+        Los endpoints de escritura hoy no llevan auth (pensados para LAN/VPN del evento):
+        la autenticación por sesión está en el <a href="#roadmap">roadmap</a>.
       </p>
 
       <h3>Endpoints REST</h3>
@@ -216,6 +223,45 @@ curl -OJ 'http://localhost:8000/api/sessions/main/export.vtt?lang=es'</pre>
       </article>
     </section>
 
+    <!-- Open source -->
+    <section class="lp-section">
+      <h2>Proyecto open source</h2>
+      <div class="lp-grid">
+        <article class="card">
+          <h3>Licencia Apache-2.0</h3>
+          <p class="hint">Aprobada por la Open Source Initiative. Usalo, modificalo y distribuilo en tu evento — incluso comercialmente — conservando la licencia y el copyright.</p>
+        </article>
+        <article class="card">
+          <h3>Self-hosted, sin vendor lock-in</h3>
+          <p class="hint">Corre en tu servidor (Docker o Python). Tu <code>GEMINI_API_KEY</code> nunca sale de tu instancia y los datos del evento quedan donde vos los pongas.</p>
+        </article>
+        <article class="card">
+          <h3>Transparente por diseño</h3>
+          <p class="hint">Todo el sistema es HTTP + WebSockets documentado abajo, con OpenAPI en <a href="/docs"><code>/docs</code></a>. Sin cajas negras: podés leer el código de cada worker.</p>
+        </article>
+        <article class="card">
+          <h3>Contribuciones bienvenidas</h3>
+          <p class="hint">Issues y pull requests en <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">github.com/anchundiatech/Simulcast</a>. Hecho para la Vibeathon de Nerdearla.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="lp-section" id="roadmap">
+      <h2>Roadmap</h2>
+      <p class="hint">Lo que ya está y lo que viene. El orden es orientativo y puede cambiar según la comunidad.</p>
+      <ul class="lp-road">
+        <li class="done"><span class="pill live">hecho</span> Transcripción + traducción en vivo multi-sesión (RTMP y navegador)</li>
+        <li class="done"><span class="pill live">hecho</span> Vista de programa público, overlay OBS/vMix y panel de monitoreo</li>
+        <li class="done"><span class="pill live">hecho</span> Export SRT / VTT / TXT por sesión e idioma</li>
+        <li><span class="pill warn">próximo</span> Glosario de términos del evento vía <code>custom_vocabulary</code></li>
+        <li><span class="pill warn">próximo</span> Latencia p50/p95 y costos estimados en el panel de monitoreo</li>
+        <li><span class="pill warn">próximo</span> <strong>Auth por sesión</strong> — tokens para <code>/ws/ingest</code> y la API de operación, y tokens efímeros de Gemini para clientes (hoy la API key vive solo en el servidor y el ingest debe restringirse por red; ver <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> §8)</li>
+        <li><span class="pill">después</span> Portugués y más idiomas de salida (workers de translate adicionales)</li>
+        <li><span class="pill">después</span> Caller SRT/ffmpeg para quemar subtítulos sin Browser Source</li>
+      </ul>
+    </section>
+
     <!-- Despliegue -->
     <section class="lp-section">
       <h2>Despliegue</h2>
@@ -242,7 +288,7 @@ curl -s http://localhost:8000/api/health | jq</pre>
   </main>
 
   <footer class="footer">
-    <span>Simulcast — solución open source de subtítulos simultáneos · Apache-2.0</span>
+    <span>Simulcast — sistema open source de subtítulos simultáneos · Apache-2.0 · <a href="https://github.com/anchundiatech/Simulcast" target="_blank" rel="noopener">GitHub</a></span>
     <span>
       <a href="/program">Programa</a>
       ·

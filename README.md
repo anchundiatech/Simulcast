@@ -33,7 +33,7 @@ Navegador (mic/pestaña) ──► WebSocket /ingest ─────┘         
 | ✅ | Export SRT / VTT / TXT por sesión e idioma (API REST) |
 | ✅ | `/overlay` — página transparente para **quemar subtítulos en OBS/vMix** (Browser Source, dual EN+ES, posicionable) |
 | ✅ | `/monitor` — **panel de monitoreo** para producción: estado, latencia, rates, errores en vivo |
-| ✅ | `/` — **landing** con qué es, cómo usarlo y **referencia de la API** (REST + WebSockets) |
+| ✅ | `/` — **landing open source**: qué es, cómo usarlo, **referencia de la API** (REST + WebSockets) y roadmap |
 
 ## Requisitos
 
@@ -191,10 +191,11 @@ web/
 
 - [x] Quemar subtítulos en OBS/vMix → `/overlay` (Browser Source dual, params de estilo)
 - [x] Panel de monitoreo para producción → `/monitor` (estado, latencia, rates, errores)
+- [x] Landing open source en `/` con referencia de la API → programa en `/program`
 - [ ] Glosario de términos vía `custom_vocabulary` en `transcribe`
 - [ ] Portugués y más idiomas de salida (más workers de translate)
 - [ ] Latencia p50/p95 y costos en el panel de monitoreo
-- [ ] Auth por sesión + tokens efímeros Gemini para clientes
+- [ ] **Auth por sesión** + tokens efímeros Gemini para clientes (hasta entonces: red/LAN + firewall, ver `docs/DEPLOY.md` §8)
 - [ ] Caller SRT/ffmpeg para quemar subtítulos sin Browser Source
 
 ## Licencia

@@ -100,12 +100,15 @@ def test_landing_and_program_pages() -> None:
         r = client.get("/")
         assert r.status_code == 200
         assert "Simulcast" in r.text
-        # Landing: product pitch + API reference.
+        # Landing: product pitch + API reference + open-source roadmap.
         assert 'id="api"' in r.text
         assert "Referencia de la API" in r.text
         assert "/api/sessions" in r.text
         assert "/ws/captions" in r.text
         assert 'href="/program"' in r.text
+        assert "Roadmap" in r.text
+        assert "Auth por sesión" in r.text
+        assert "Apache-2.0" in r.text
         # Public picker/player lives at /program now.
         r = client.get("/program")
         assert r.status_code == 200
