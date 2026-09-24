@@ -62,14 +62,15 @@ Si el evento ya tiene un MediaMTX / nginx-rtmp existente, apuntá `SIMULCAST` a 
 
 ## 5. Vista para la audiencia
 
-Compartí la URL del evento (programa con todas las sesiones/casts):
+La landing en `/` presenta el sistema y su API. Para el evento, compartí la URL del
+**programa** (grilla con todas las sesiones/casts):
 
 ```
-https://captions.tuevento.com/
+https://captions.tuevento.com/program
 ```
 
 - La portada muestra una **grilla de sesiones** con estado (`en vivo`), idiomas y espectadores.
-- Al elegir una cast se abre `/?session=main` con la transcripción + traducción.
+- Al elegir una cast se abre `/program?session=main` con la transcripción + traducción.
 - Cada persona también puede elegir **idioma** (Original / Español / English).
 - Ideal embeber como **iframe** o link en el programa del evento.
 - Para apps móviles: la misma URL es PWA-ready (podés agregar manifest después).

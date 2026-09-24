@@ -1,6 +1,7 @@
 /* Simulcast audience UI — program picker + captions player */
 (() => {
   const $ = (sel) => document.querySelector(sel);
+  const PROGRAM = "/program";
 
   const viewPicker = $("#viewPicker");
   const viewPlayer = $("#viewPlayer");
@@ -110,7 +111,7 @@
           ? `<span class="muted-num">${escapeHtml(s.ingest.kind || "audio")} activo</span>`
           : `<span class="muted-num">sin audio</span>`;
         return `
-        <a class="session-card ${s.status === "live" ? "is-live" : ""}" href="/?session=${encodeURIComponent(s.config.id)}" data-id="${escapeHtml(s.config.id)}">
+        <a class="session-card ${s.status === "live" ? "is-live" : ""}" href="${PROGRAM}?session=${encodeURIComponent(s.config.id)}" data-id="${escapeHtml(s.config.id)}">
           <header class="session-card-h">
             <strong>${escapeHtml(s.config.name)}</strong>
             ${statusPill(s.status)}
@@ -140,7 +141,7 @@
     viewPicker.hidden = true;
     viewPlayer.hidden = false;
     document.title = `Simulcast — ${sid}`;
-    history.replaceState(null, "", `/?session=${encodeURIComponent(sid)}`);
+    history.replaceState(null, "", `${PROGRAM}?session=${encodeURIComponent(sid)}`);
     // Ensure select has the session, then connect.
     ensureSessionSelected(sid);
     refreshLangs();
@@ -347,7 +348,7 @@
     const sid = card.getAttribute("data-id");
     if (sid) {
       // Soft navigation so back button still works via history.
-      history.pushState({ session: sid }, "", `/?session=${encodeURIComponent(sid)}`);
+      history.pushState({ session: sid }, "", `${PROGRAM}?session=${encodeURIComponent(sid)}`);
       showPlayer(sid);
     }
   });
@@ -362,7 +363,7 @@
   sessionSelect.addEventListener("change", () => {
     const sid = sessionSelect.value;
     if (!sid) return;
-    history.pushState({ session: sid }, "", `/?session=${encodeURIComponent(sid)}`);
+    history.pushState({ session: sid }, "", `${PROGRAM}?session=${encodeURIComponent(sid)}`);
     refreshLangs();
     updateMetaFromList();
     stopCaptionUi();

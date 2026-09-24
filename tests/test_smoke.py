@@ -95,12 +95,20 @@ def test_health_and_sessions_api() -> None:
         assert r.status_code == 404
 
 
-def test_index_and_operator_pages() -> None:
+def test_landing_and_program_pages() -> None:
     with TestClient(app) as client:
         r = client.get("/")
         assert r.status_code == 200
         assert "Simulcast" in r.text
-        # Public picker: session/cast grid + player views.
+        # Landing: product pitch + API reference.
+        assert 'id="api"' in r.text
+        assert "Referencia de la API" in r.text
+        assert "/api/sessions" in r.text
+        assert "/ws/captions" in r.text
+        assert 'href="/program"' in r.text
+        # Public picker/player lives at /program now.
+        r = client.get("/program")
+        assert r.status_code == 200
         assert "sessionGrid" in r.text
         assert "viewPicker" in r.text
         assert "viewPlayer" in r.text

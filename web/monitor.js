@@ -135,7 +135,7 @@
           </dl>
           ${errHtml}
           <footer class="mon-card-f">
-            <a class="btn ghost" href="/?session=${encodeURIComponent(s.config?.id || "")}" target="_blank">Audiencia</a>
+            <a class="btn ghost" href="/program?session=${encodeURIComponent(s.config?.id || "")}" target="_blank">Audiencia</a>
             <a class="btn ghost" href="/operator">Operar</a>
             <a class="btn ghost" href="/overlay?session=${encodeURIComponent(s.config?.id || "")}&langs=original,es" target="_blank">Overlay</a>
           </footer>

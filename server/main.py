@@ -179,8 +179,15 @@ async def ws_monitor(websocket: WebSocket) -> None:
 
 
 @app.get("/")
-async def index() -> FileResponse:
-    return FileResponse(WEB_DIR / "index.html")
+async def home() -> FileResponse:
+    """Landing page: qué es Simulcast, cómo usarlo y referencia de la API."""
+    return FileResponse(WEB_DIR / "home.html")
+
+
+@app.get("/program")
+async def program() -> FileResponse:
+    """Public program grid + captions player (audiencia)."""
+    return FileResponse(WEB_DIR / "program.html")
 
 
 @app.get("/operator")

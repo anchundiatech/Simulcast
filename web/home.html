@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulcast — Subtítulos simultáneos en vivo para conferencias</title>
+  <meta name="description" content="Simulcast: transcripción y traducción en vivo a escala para conferencias. Open source, Apache-2.0, API REST + WebSockets." />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">SC</span>
+      <div>
+        <h1>Simulcast</h1>
+        <p class="tagline">Subtítulos simultáneos open source para conferencias</p>
+      </div>
+    </div>
+    <nav class="controls">
+      <a class="btn primary" href="/program">Programa en vivo</a>
+      <a class="btn ghost" href="/operator">Operación</a>
+      <a class="btn ghost" href="/monitor">Monitoreo</a>
+      <a class="btn ghost" href="#api">API</a>
+    </nav>
+  </header>
+
+  <main class="lp">
+    <!-- Hero -->
+    <section class="lp-hero">
+      <h2>Transcripción y traducción en vivo, en cada escenario, al mismo tiempo</h2>
+      <p class="lp-lead">
+        Simulcast recibe el audio de un escenario (OBS por RTMP o el audio de tu navegador) y produce
+        subtítulos en tiempo real: el idioma original y una traducción, para toda la audiencia.
+        Diseñado para eventos con decenas de sesiones en paralelo.
+      </p>
+      <div class="lp-cta">
+        <a class="btn primary" href="/program">Ver el programa <span class="ico">→</span></a>
+        <a class="btn" href="/operator">Compartir audio</a>
+        <a class="btn ghost" href="#api">Referencia de la API <span class="ico">↓</span></a>
+      </div>
+      <ul class="lp-tags">
+        <li class="pill live">Apache-2.0</li>
+        <li class="pill live">Gemini Live API</li>
+        <li class="pill">RTMP + navegador</li>
+        <li class="pill">Overlay OBS/vMix</li>
+        <li class="pill">Multi-sesión</li>
+      </ul>
+    </section>
+
+    <!-- Qué es -->
+    <section class="lp-section">
+      <h2>Qué hace</h2>
+      <div class="lp-grid">
+        <article class="card">
+          <h3>Transcripción en vivo</h3>
+          <p class="hint">El audio del escenario se transcribe en el idioma hablado, con parciales (interim) y finales, en menos de un segundo.</p>
+        </article>
+        <article class="card">
+          <h3>Traducción simultánea</h3>
+          <p class="hint">Cada sesión entrega original + traducción (es / en / pt). La audiencia elige el idioma que quiere ver.</p>
+        </article>
+        <article class="card">
+          <h3>Multi-escenario</h3>
+          <p class="hint">Diez o más sesiones en paralelo, cada una con su stream, sus workers y su página de subtítulos.</p>
+        </article>
+        <article class="card">
+          <h3>Dos fuentes de audio</h3>
+          <p class="hint"><strong>OBS → RTMP</strong> para producción, o <strong>audio del navegador</strong> (pestaña o micrófono) para probar sin infraestructura.</p>
+        </article>
+        <article class="card">
+          <h3>Quemar en el stream</h3>
+          <p class="hint">La página <code>/overlay</code> es un Browser Source transparente para OBS, vMix o Streamlabs: subtítulos dentro del video.</p>
+        </article>
+        <article class="card">
+          <h3>Operación y monitoreo</h3>
+          <p class="hint">Panel de operación para el audio y panel de monitoreo con latencia, rates y errores en vivo para el equipo de producción.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Cómo funciona -->
+    <section class="lp-section">
+      <h2>Cómo funciona</h2>
+      <pre class="lp-code diagram">OBS / RTMP ──► MediaMTX ──► ffmpeg (PCM 16 kHz) ──┐
+                                                   ├──► Session Manager ──► Gemini Live workers
+Navegador (pestaña / micrófono) ──► WS /ws/ingest ─┘                              │
+                                                                                  ▼
+                              Audiencia ◄── WS /ws/captions ◄── EventBus
+                              (elegir sesión + idioma)</pre>
+      <div class="lp-grid">
+        <article class="card">
+          <h3>1. Entrada de audio</h3>
+          <p class="hint">RTMP desde OBS (un path por sesión: <code>rtmp://host:1935/main</code>) o el navegador enviando PCM 16 kHz mono por WebSocket.</p>
+        </article>
+        <article class="card">
+          <h3>2. Workers por sesión</h3>
+          <p class="hint">Cada sesión con traducción abre una conexión a la Gemini Live API. Arrancan con el primer audio y se detienen ~60 s después de que el stream muere (ahorra cuota).</p>
+        </article>
+        <article class="card">
+          <h3>3. Salida para la audiencia</h3>
+          <p class="hint">Un fan-out por WebSocket lleva captions a la vista web, al overlay de OBS y a cualquier cliente que se conecte. La API key nunca sale del servidor.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Uso -->
+    <section class="lp-section">
+      <h2>Cómo usar Simulcast</h2>
+      <div class="lp-grid">
+        <article class="card">
+          <h3>Demo en 60 segundos</h3>
+          <ol class="lp-steps">
+            <li>Creá una sesión en <a href="/operator">Operación</a> (ej. origen <code>en</code>, traducción <code>es</code>).</li>
+            <li>Marcá una o varias sesiones y tocá <strong>Compartir audio</strong> (pestaña con audio o micrófono).</li>
+            <li>Abrí <a href="/program">el programa</a>: la sesión pasa a <strong>en vivo</strong> y los subtítulos fluyen en vivo.</li>
+          </ol>
+        </article>
+        <article class="card">
+          <h3>En producción (OBS)</h3>
+          <ol class="lp-steps">
+            <li>OBS → Settings → Stream → Custom: <code>rtmp://TU_HOST:1935</code>, stream key = <code>id</code> de la sesión.</li>
+            <li>Verificá en <a href="/operator">Operación</a> que el audio esté activo.</li>
+            <li>Para quemar subtítulos en el video: Browser Source con <a href="/overlay?session=stage-1&amp;langs=original,es"><code>/overlay?session=…</code></a>.</li>
+          </ol>
+        </article>
+        <article class="card">
+          <h3>Vistas del sistema</h3>
+          <ul class="lp-links">
+            <li><a href="/program">/program</a> — grilla del programa y vista de audiencia.</li>
+            <li><a href="/operator">/operator</a> — crear sesiones y compartir audio.</li>
+            <li><a href="/monitor">/monitor</a> — panel de producción (latencia, rates, errores).</li>
+            <li><a href="/overlay?session=stage-1">/overlay</a> — subtítulos para OBS / vMix.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- API -->
+    <section class="lp-section" id="api">
+      <h2>Referencia de la API</h2>
+      <p class="hint">
+        Todo el sistema se opera por HTTP + WebSockets. La misma instancia expone
+        <a href="/docs">OpenAPI en <code>/docs</code></a> (Swagger) para probarla en el navegador.
+      </p>
+
+      <h3>Endpoints REST</h3>
+      <table class="table lp-table">
+        <thead>
+          <tr><th>Método</th><th>Ruta</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/health</code></td><td>Estado general: sesiones, rates, uptime, modelos, Gemini configurado</td></tr>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/monitor</code></td><td>Snapshot de monitoreo: sesiones + métricas + errores recientes</td></tr>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/monitor/errors</code></td><td>Últimos errores (parámetro <code>?limit=</code>)</td></tr>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions</code></td><td>Lista de sesiones con workers, ingest y métricas</td></tr>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions/{id}</code></td><td>Snapshot de una sesión (404 si no existe)</td></tr>
+          <tr><td><span class="pill warn">POST</span></td><td><code>/api/sessions</code></td><td>Crear sesión (201 · 429 si se supera el máximo · 422 si es inválida)</td></tr>
+          <tr><td><span class="pill warn">PUT</span></td><td><code>/api/sessions/{id}</code></td><td>Reconfigurar (reinicia sus workers)</td></tr>
+          <tr><td><span class="pill err">DELETE</span></td><td><code>/api/sessions/{id}</code></td><td>Eliminar sesión (204)</td></tr>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions/{id}/captions?lang=es</code></td><td>Historial de captions (<code>lang=all</code> para todos)</td></tr>
+          <tr><td><span class="pill live">GET</span></td><td><code>/api/sessions/{id}/export.{fmt}?lang=…</code></td><td>Export: <code>srt</code> · <code>vtt</code> · <code>txt</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="lp-grid">
+        <article class="card">
+          <h3>Crear una sesión</h3>
+          <pre class="lp-code">curl -X POST http://localhost:8000/api/sessions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "id": "main",
+    "name": "Main Stage",
+    "source_language": "en",
+    "output_languages": ["original", "es"]
+  }'</pre>
+          <p class="hint">Campos: <code>id</code> (slug), <code>name</code>, <code>source_language</code> (<code>en</code> | <code>es</code> | <code>pt</code> | <code>auto</code>), <code>output_languages</code> (siempre arranca con <code>original</code>).</p>
+        </article>
+        <article class="card">
+          <h3>Estado y salud</h3>
+          <pre class="lp-code">curl -s http://localhost:8000/api/health | jq
+curl -s http://localhost:8000/api/sessions | jq '.sessions[].config.id'</pre>
+          <p class="hint">Ideal para scripts y alertas: <code>gemini_configured</code>, <code>live_sessions</code>, <code>captions_per_min</code>, <code>errors_total</code>, <code>uptime_s</code>.</p>
+        </article>
+        <article class="card">
+          <h3>Captions y export</h3>
+          <pre class="lp-code">curl 'http://localhost:8000/api/sessions/main/captions?lang=es'
+curl -OJ 'http://localhost:8000/api/sessions/main/export.vtt?lang=es'</pre>
+          <p class="hint">El historial vive en memoria: consultalo durante el evento o exportá al final de cada charla.</p>
+        </article>
+      </div>
+
+      <h3>WebSockets</h3>
+      <table class="table lp-table">
+        <thead>
+          <tr><th>Ruta</th><th>Dirección</th><th>Qué hace</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/ws/captions/{id}?lang=es</code></td><td>audiencia</td><td>Stream de subtítulos (<code>lang=all</code> para todos los idiomas). Primer mensaje <code>hello</code> con el estado de la sesión.</td></tr>
+          <tr><td><code>/ws/ingest/{id}</code></td><td>operador</td><td>Audio entrante: frames binarios PCM s16le mono 16 kHz de 100 ms (3200 bytes). Responde <code>{"type":"ready"}</code> al abrir.</td></tr>
+          <tr><td><code>/ws/monitor</code></td><td>panel</td><td>Snapshot inicial + actualizaciones de estado y heartbeat cada 3 s.</td></tr>
+        </tbody>
+      </table>
+
+      <article class="card">
+        <h3>Formato de un caption (JSON)</h3>
+        <pre class="lp-code">{
+  "type": "caption",
+  "session": "main",
+  "lang": "es",
+  "text": "Hola, bienvenidos a la conferencia",
+  "final": true,
+  "t": 1769000000.123,
+  "id": "main:es:42:ab12cd"
+}</pre>
+        <p class="hint">Los eventos con <code>final:false</code> son parciales (interim): la UI los reemplaza cuando llega el final con el mismo <code>id</code>.</p>
+      </article>
+    </section>
+
+    <!-- Despliegue -->
+    <section class="lp-section">
+      <h2>Despliegue</h2>
+      <div class="lp-grid">
+        <article class="card">
+          <h3>Docker (recomendado)</h3>
+          <pre class="lp-code">git clone &lt;repo-url&gt; simulcast &amp;&amp; cd simulcast
+cp .env.example .env            # GEMINI_API_KEY=...
+cp sessions.example.yaml sessions.yaml
+docker compose up -d --build
+curl -s http://localhost:8000/api/health | jq</pre>
+        </article>
+        <article class="card">
+          <h3>Requisitos</h3>
+          <ul class="lp-links">
+            <li>Una API key de <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>.</li>
+            <li>Python 3.11+ o Docker; <code>ffmpeg</code> + MediaMTX solo si usás RTMP.</li>
+            <li>2 vCPU / 4 GB RAM alcanzan para la demo; el peso lo lleva la Gemini Live API.</li>
+            <li>Guía completa: <a href="https://github.com/anchundiatech/Simulcast/blob/main/docs/DEPLOY.md">docs/DEPLOY.md</a> (TLS, MediaMTX, overlay, seguridad).</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Simulcast — solución open source de subtítulos simultáneos · Apache-2.0</span>
+    <span>
+      <a href="/program">Programa</a>
+      ·
+      <a href="/operator">Operación</a>
+      ·
+      <a href="/monitor">Monitoreo</a>
+      ·
+      <a href="/docs">OpenAPI</a>
+    </span>
+  </footer>
+</body>
+</html>

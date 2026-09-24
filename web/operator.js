@@ -78,7 +78,7 @@
         <td>${s.viewers ?? 0}</td>
         <td class="cell-icon" title="${esc(errors)}">${errors ? "⚠" : "—"}</td>
         <td>
-          <a class="btn ghost" href="/?session=${encodeURIComponent(s.config.id)}" target="_blank">Ver</a>
+          <a class="btn ghost" href="/program?session=${encodeURIComponent(s.config.id)}" target="_blank">Ver</a>
           <button class="btn ghost icon" data-del="${esc(s.config.id)}" title="Eliminar sesión" aria-label="Eliminar sesión"><span class="ico">✕</span></button>
         </td>`;
       sessionsTable.appendChild(tr);
@@ -131,7 +131,7 @@
 
   function updateViewLink() {
     const first = selectedSessions()[0] || primarySid;
-    $("#viewLink").href = first ? `/?session=${encodeURIComponent(first)}` : "/";
+    $("#viewLink").href = first ? `/program?session=${encodeURIComponent(first)}` : "/program";
   }
 
   function updateSessionStat() {

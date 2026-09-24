@@ -33,6 +33,7 @@ Navegador (mic/pestaña) ──► WebSocket /ingest ─────┘         
 | ✅ | Export SRT / VTT / TXT por sesión e idioma (API REST) |
 | ✅ | `/overlay` — página transparente para **quemar subtítulos en OBS/vMix** (Browser Source, dual EN+ES, posicionable) |
 | ✅ | `/monitor` — **panel de monitoreo** para producción: estado, latencia, rates, errores en vivo |
+| ✅ | `/` — **landing** con qué es, cómo usarlo y **referencia de la API** (REST + WebSockets) |
 
 ## Requisitos
 
@@ -55,17 +56,19 @@ cp sessions.example.yaml sessions.yaml   # ya viene un ejemplo con 3 escenarios
 uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-- Audiencia: <http://localhost:8000/>
+- Landing (qué es + API): <http://localhost:8000/>
+- Programa / audiencia: <http://localhost:8000/program>
 - Operación / audio desde navegador: <http://localhost:8000/operator>
 - Monitoreo producción: <http://localhost:8000/monitor>
 - Overlay OBS (Browser Source): <http://localhost:8000/overlay?session=stage-1&langs=original,es>
 - Health: <http://localhost:8000/api/health>
+- OpenAPI (Swagger): <http://localhost:8000/docs>
 
 ### Demo en 60 segundos (sin OBS)
 
-1. Abrí `/` → elegí una sesión de la grilla (o `/operator` para crear una: ej. `stage-1`, origen `en`, traducción `es`).
+1. Abrí `/program` → elegí una sesión de la grilla (o `/operator` para crear una: ej. `stage-1`, origen `en`, traducción `es`).
 2. En `/operator` → marcá una o varias sesiones → **Compartir audio** → compartí una pestaña con audio (un video de YouTube en inglés sirve). El mismo audio se envía a todas las sesiones marcadas al mismo tiempo.
-3. Volvé a `/` → la sesión pasa a **en vivo** → entrá y elegí idioma → subtítulos en vivo.
+3. Volvé a `/program` → la sesión pasa a **en vivo** → entrá y elegí idioma → subtítulos en vivo.
 
 ## Despliegue con Docker
 
@@ -163,7 +166,8 @@ server/
     ├── websocket_ingest.py  # Audio desde navegador
     └── rtmp_ingest.py       # ffmpeg desde MediaMTX
 web/
-├── index.html / app.js   # Vista audiencia
+├── home.html            # Landing (producto + referencia de la API)
+├── program.html / app.js   # Vista audiencia (grilla + player)
 ├── operator.html / operator.js  # Panel de audio demo + sesiones
 ├── monitor.html / monitor.js    # Panel de monitoreo producción
 ├── overlay.html          # Overlay OBS/vMix

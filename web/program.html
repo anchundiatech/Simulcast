@@ -19,7 +19,7 @@
       </div>
       <div class="controls">
         <span id="pickerStatus" class="badge badge-off">cargando…</span>
-        <label class="field">
+        <label class="field inline">
           <span>Filtrar</span>
           <input id="pickerFilter" type="search" placeholder="nombre o id…" autocomplete="off" />
         </label>
@@ -46,6 +46,8 @@
     <footer class="footer">
       <span>Simulcast — subtítulos simultáneos open source</span>
       <span>
+        <a href="/">Inicio</a>
+        ·
         <a href="/operator" target="_blank">Operación</a>
         ·
         <a href="/monitor" target="_blank">Monitoreo</a>
@@ -57,18 +59,18 @@
   <div id="viewPlayer" class="view" hidden>
     <header class="topbar">
       <div class="brand">
-        <a id="backBtn" class="btn ghost" href="/" title="Volver al programa"><span class="ico">←</span></a>
+        <a id="backBtn" class="btn ghost" href="/program" title="Volver al programa"><span class="ico">←</span></a>
         <div>
           <h1 id="playerTitle">Simulcast</h1>
           <p class="tagline" id="playerSubtitle">Subtítulos en vivo</p>
         </div>
       </div>
       <div class="controls">
-        <label class="field">
+        <label class="field inline">
           <span>Sesión</span>
           <select id="sessionSelect"></select>
         </label>
-        <label class="field">
+        <label class="field inline">
           <span>Idioma</span>
           <select id="langSelect"></select>
         </label>
@@ -106,7 +108,9 @@
     <footer class="footer">
       <span>Simulcast — solución open source de subtítulos simultáneos para conferencias</span>
       <span>
-        <a href="/">Programa</a>
+        <a href="/">Inicio</a>
+        ·
+        <a href="/program">Programa</a>
         ·
         <a href="/operator" target="_blank">Operación</a>
         ·
