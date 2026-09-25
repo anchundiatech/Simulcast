@@ -79,9 +79,23 @@
     </header>
 
     <main>
-      <section class="stage">
-        <div id="liveCaption" class="live-caption" aria-live="polite"></div>
-        <div id="history" class="history"></div>
+      <section class="stage" aria-label="Subtítulos en vivo">
+        <div class="caption-head">
+          <span id="captionLang" class="pill">Original</span>
+          <span id="captionState" class="caption-state">esperando audio…</span>
+        </div>
+        <div
+          id="liveCaption"
+          class="live-caption is-empty"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >Esperando transcripción…</div>
+        <div class="history-head">
+          <h3>Historial</h3>
+          <span class="hint muted">últimos segmentos finales</span>
+        </div>
+        <ol id="history" class="history" aria-label="Historial de transcripción"></ol>
       </section>
 
       <aside class="meta">
@@ -119,6 +133,7 @@
     </footer>
   </div>
 
+  <script src="/static/captions.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>
