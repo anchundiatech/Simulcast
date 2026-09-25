@@ -27,6 +27,7 @@ async def health() -> HealthResponse:
         degraded_sessions=degraded,
         max_sessions=settings.simulcast_max_sessions,
         gemini_configured=bool(settings.gemini_api_key),
+        rtmp_base=settings.simulcast_rtmp_base,
         uptime_s=g["uptime_s"],
         captions_per_min=g["captions_per_min"],
         captions_total=g["captions_total"],
