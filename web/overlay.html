@@ -8,12 +8,19 @@
     Transparent caption overlay for OBS / vMix Browser Source (and any
     HTML-based streaming tool). No UI chrome — only burned-in subtitles.
 
+    The page opens ONE WebSocket (lang=all) and renders a single bilingual
+    caption unit (original + translation) with the SAME shared model and
+    the SAME LiveCaption component as the audience page
+    (see /static/captions.js and /static/live-caption.js).
+
+    The session id can also come from the path: /overlay/<session-id>.
+
     Query params
     ------------
-    session   Session id                         (default: stage-1)
-    lang      original | es | en | pt | all      (default: original)
-              "all" (or langs=a,b) shows two lines: original on top,
-              translation below (primary color) — conference layout.
+    session   Session id (also /overlay/<id>)      (default: stage-1)
+    lang      original | es | en | pt | all — a single language shows one
+              line; "all" shows dual                          (default: dual
+              from the session config: original + its translation)
     langs     Explicit dual languages, e.g. "original,es"
     pos       bottom | top                       (default: bottom)
     align     center | left | right              (default: center)
@@ -95,7 +102,6 @@
     #lines {
       display: flex;
       flex-direction: column;
-      gap: var(--gap);
       align-items: center;
       width: 100%;
       max-width: 100%;
@@ -114,11 +120,30 @@
     }
 
     /*
+      Shared LiveCaption component (same markup as the audience page).
+      Only ONE current caption is rendered — it updates in place.
+    */
+    .lc {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      align-items: center;
+      width: 100%;
+      max-width: 100%;
+    }
+    #stage.align-left .lc {
+      align-items: flex-start;
+    }
+    #stage.align-right .lc {
+      align-items: flex-end;
+    }
+    /*
       Caption "bar": soft horizontal fade so there is NO hard vertical line
       at the left/right edges (common complaint on Browser Sources).
     */
-    .line {
+    .lc-line {
       position: relative;
+      margin: 0;
       max-width: min(96vw, 1480px);
       padding: 0.5em 1.4em;
       border-radius: calc(var(--radius) * 0.5);
@@ -129,6 +154,18 @@
         rgba(0, 0, 0, var(--bg-alpha)) 96%,
         rgba(0, 0, 0, 0) 100%
       );
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .lc-line[hidden] {
+      display: none;
+    }
+    /* Optional hard pill (only when edge=solid) */
+    body.edge-solid .lc-line {
+      background: rgba(0, 0, 0, var(--bg-alpha));
+      border-radius: var(--radius);
+    }
+    .lc-line--original .lc-text {
       color: var(--fg);
       font-size: var(--font-size);
       font-weight: 600;
@@ -137,31 +174,48 @@
       text-shadow:
         0 0 4px rgba(0, 0, 0, 0.75),
         0 1px 2px rgba(0, 0, 0, 0.7);
-      overflow-wrap: anywhere;
-      word-break: break-word;
     }
-    /* Optional hard pill (only when edge=solid) */
-    body.edge-solid .line {
-      background: rgba(0, 0, 0, var(--bg-alpha));
-      border-radius: var(--radius);
-    }
-    .line.secondary {
+    .lc-line--translation .lc-text {
       color: var(--accent);
       font-size: calc(var(--font-size) * 0.92);
       font-weight: 500;
+      line-height: 1.35;
+      text-align: center;
+      text-shadow:
+        0 0 4px rgba(0, 0, 0, 0.75),
+        0 1px 2px rgba(0, 0, 0, 0.7);
     }
-    .line.interim {
+    .lc-box--overlay[data-interim="1"] .lc-text {
       opacity: 0.7;
+    }
+    .lc-line--translation[data-pending="1"] .lc-text {
+      opacity: 0.55;
     }
 
     /* clean style: no box, just legible text */
-    body.style-clean .line {
+    body.style-clean .lc-line {
       background: transparent;
       padding: 0.1em 0.2em;
+    }
+    body.style-clean .lc-line .lc-text {
       text-shadow:
         0 0 4px rgba(0, 0, 0, 0.9),
         0 1px 2px rgba(0, 0, 0, 0.9),
         0 0 18px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Screen-reader-only labels (Original: / Traducción:). */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     #badge {
@@ -215,212 +269,12 @@
   <div id="status">…</div>
   <div id="stage" class="pos-bottom align-center">
     <div id="lines" aria-live="polite">
-      <div class="line primary" id="primary"></div>
-      <div class="line secondary" id="secondary" hidden></div>
+      <div class="lc-box lc-box--overlay" id="overlayCaption"></div>
     </div>
   </div>
 
-  <script>
-    (() => {
-      const params = new URLSearchParams(location.search);
-
-      const cfg = {
-        session: params.get("session") || "stage-1",
-        lang: (params.get("lang") || "original").toLowerCase(),
-        pos: params.get("pos") === "top" ? "top" : "bottom",
-        align: ["left", "center", "right"].includes(params.get("align"))
-          ? params.get("align") : "center",
-        size: clampInt(params.get("size"), 14, 96, 36),
-        hold: clampFloat(params.get("hold"), 1, 60, 6),
-        bg: clampFloat(params.get("bg"), 0, 1, 0),
-        fg: params.get("fg") || "#ffffff",
-        accent: params.get("accent") || "#069ddb",
-        radius: clampInt(params.get("radius"), 0, 40, 8),
-        maxChars: clampInt(params.get("maxchars"), 16, 200, 64),
-        badge: params.get("badge") === "1",
-        status: params.get("status") === "1",
-        style: params.get("style") === "clean" ? "clean" : "bar",
-        edge: params.get("edge") === "solid" ? "solid" : "fade",
-        gap: clampFloat(params.get("gap"), 0, 1, 0.15),
-      };
-
-      // Dual-language resolution
-      let primaryLang = cfg.lang;
-      let secondaryLang = null;
-      const langsParam = params.get("langs");
-      if (langsParam) {
-        const parts = langsParam.split(",").map((s) => s.trim()).filter(Boolean);
-        primaryLang = parts[0] || "original";
-        secondaryLang = parts[1] || null;
-      } else if (cfg.lang === "all") {
-        primaryLang = "original";
-        secondaryLang = "es";
-      }
-
-      // Apply config to CSS / DOM
-      const root = document.documentElement;
-      root.style.setProperty("--fg", cfg.fg);
-      root.style.setProperty("--accent", cfg.accent);
-      root.style.setProperty("--bg-alpha", String(cfg.bg));
-      root.style.setProperty("--radius", cfg.radius + "px");
-      root.style.setProperty("--font-size", cfg.size + "px");
-      root.style.setProperty("--gap", cfg.gap + "em");
-      if (cfg.style === "clean") document.body.classList.add("style-clean");
-      if (cfg.edge === "solid") document.body.classList.add("edge-solid");
-
-      const stage = document.getElementById("stage");
-      stage.className = `pos-${cfg.pos} align-${cfg.align}`;
-
-      const badge = document.getElementById("badge");
-      if (cfg.badge) {
-        badge.textContent = secondaryLang
-          ? `${cfg.session} · ${primaryLang} → ${secondaryLang}`
-          : `${cfg.session} · ${primaryLang}`;
-        badge.classList.add("show");
-      }
-
-      const statusEl = document.getElementById("status");
-      if (cfg.status) statusEl.classList.add("show");
-
-      const linesEl = document.getElementById("lines");
-      const primaryEl = document.getElementById("primary");
-      const secondaryEl = document.getElementById("secondary");
-      if (secondaryLang) secondaryEl.hidden = false;
-
-      // Rolling buffers so fragmented finals read as continuous sentences.
-      // Each slot: { text, final }
-      const PRIMARY_ROLL = 4;
-      const SECONDARY_ROLL = 4;
-      /** @type {{text:string, final:boolean}[]} */
-      let primaryBuf = [];
-      /** @type {{text:string, final:boolean}[]} */
-      let secondaryBuf = [];
-      let hideTimer = null;
-      let reconnectDelay = 1000;
-      let closed = false;
-
-      function clampInt(v, min, max, dflt) {
-        const n = parseInt(v ?? "", 10);
-        return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : dflt;
-      }
-      function clampFloat(v, min, max, dflt) {
-        const n = parseFloat(v ?? "");
-        return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : dflt;
-      }
-      function sanitize(s) {
-        return String(s ?? "").replace(/[<>]/g, "");
-      }
-      function joinBuf(buf) {
-        return buf
-          .map((e) => e.text.trim())
-          .filter(Boolean)
-          .join(" ")
-          .trim();
-      }
-      function applyBuffer(buf, max, entry) {
-        // If entry is interim, replace trailing interim; if final, replace
-        // trailing interim then append as final.
-        if (!entry.final) {
-          if (buf.length && !buf[buf.length - 1].final) {
-            buf[buf.length - 1] = entry;
-          } else {
-            buf.push(entry);
-          }
-        } else {
-          if (buf.length && !buf[buf.length - 1].final) {
-            buf[buf.length - 1] = entry;
-          } else {
-            // Avoid duplicating identical consecutive finals.
-            const last = buf[buf.length - 1];
-            if (!last || last.text !== entry.text) buf.push(entry);
-          }
-        }
-        while (buf.length > max) buf.shift();
-        return buf;
-      }
-      function render() {
-        const p = joinBuf(primaryBuf);
-        const s = joinBuf(secondaryBuf);
-        const lastP = primaryBuf[primaryBuf.length - 1];
-        primaryEl.textContent = p;
-        primaryEl.classList.toggle("interim", !!(lastP && !lastP.final));
-        if (secondaryLang) {
-          const lastS = secondaryBuf[secondaryBuf.length - 1];
-          secondaryEl.textContent = s;
-          secondaryEl.classList.toggle("interim", !!(lastS && !lastS.final));
-        }
-        if (p || s) linesEl.classList.add("show");
-      }
-      function pushCaption(msg) {
-        const isPrimary = msg.lang === primaryLang;
-        const isSecondary = secondaryLang && msg.lang === secondaryLang;
-        if (!isPrimary && !isSecondary) return;
-
-        const entry = { text: sanitize(msg.text), final: !!msg.final };
-        if (isPrimary) {
-          applyBuffer(primaryBuf, PRIMARY_ROLL, entry);
-        } else {
-          applyBuffer(secondaryBuf, SECONDARY_ROLL, entry);
-        }
-        render();
-        scheduleHide();
-      }
-
-      function scheduleHide() {
-        clearTimeout(hideTimer);
-        hideTimer = setTimeout(() => {
-          linesEl.classList.remove("show");
-        }, cfg.hold * 1000);
-      }
-
-      function setStatus(text, cls) {
-        if (!cfg.status) return;
-        statusEl.textContent = text;
-        statusEl.className = cls || "";
-        statusEl.classList.add("show");
-      }
-
-      // Subscribe to all languages we care about (single WS with lang=all
-      // is simplest when dual, otherwise filter client-side anyway).
-      const wsLang = secondaryLang ? "all" : primaryLang;
-      let ws = null;
-
-      function connect() {
-        if (closed) return;
-        const proto = location.protocol === "https:" ? "wss" : "ws";
-        const url =
-          `${proto}://${location.host}/ws/captions/${encodeURIComponent(cfg.session)}` +
-          `?lang=${encodeURIComponent(wsLang)}`;
-        setStatus("conectando…", "");
-        ws = new WebSocket(url);
-
-        ws.onopen = () => {
-          reconnectDelay = 1000;
-          setStatus("en vivo", "ok");
-        };
-        ws.onmessage = (ev) => {
-          let msg;
-          try { msg = JSON.parse(ev.data); } catch { return; }
-          if (msg.type === "caption") pushCaption(msg);
-          if (msg.type === "hello") setStatus("en vivo", "ok");
-        };
-        ws.onerror = () => setStatus("error", "err");
-        ws.onclose = () => {
-          if (closed) return;
-          setStatus("reconectando…", "");
-          setTimeout(connect, reconnectDelay);
-          reconnectDelay = Math.min(reconnectDelay * 1.7, 8000);
-        };
-      }
-
-      // Visibility: OBS may keep the source active; no special handling needed.
-      window.addEventListener("beforeunload", () => {
-        closed = true;
-        try { ws && ws.close(); } catch {}
-      });
-
-      connect();
-    })();
-  </script>
+  <script src="/static/captions.js"></script>
+  <script src="/static/live-caption.js"></script>
+  <script src="/static/overlay.js"></script>
 </body>
 </html>
