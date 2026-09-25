@@ -23,21 +23,36 @@ class SessionMetrics:
     captions_total: int = 0
     finals_total: int = 0
     errors_total: int = 0
+    # Per-track (lang) freshness — distinguishes "translation falling behind"
+    # from "everything stale" when only one track stops producing.
+    captions_by_lang: dict[str, int] = field(default_factory=dict)
+    finals_by_lang: dict[str, int] = field(default_factory=dict)
+    last_caption_by_lang: dict[str, float] = field(default_factory=dict)
     # EMA of caption→publish path (ms); updated on each caption.
     latency_ema_ms: float | None = None
     last_latency_ms: float | None = None
+    # Measured first-audio → first-caption (seconds), see session_manager.
+    first_caption_latency_s: float | None = None
     # Rolling rate window (seconds)
     rate_window_s: float = 60.0
 
     def note_caption(
-        self, *, final: bool, t: float | None = None, latency_ms: float | None = None
+        self,
+        *,
+        final: bool,
+        t: float | None = None,
+        latency_ms: float | None = None,
+        lang: str = "unknown",
     ) -> None:
         now = t if t is not None else time.time()
         self.caption_times.append(now)
         self.captions_total += 1
+        self.captions_by_lang[lang] = self.captions_by_lang.get(lang, 0) + 1
+        self.last_caption_by_lang[lang] = now
         if final:
             self.final_times.append(now)
             self.finals_total += 1
+            self.finals_by_lang[lang] = self.finals_by_lang.get(lang, 0) + 1
         if latency_ms is not None and latency_ms >= 0:
             self.last_latency_ms = latency_ms
             if self.latency_ema_ms is None:
@@ -60,6 +75,14 @@ class SessionMetrics:
     def snapshot(self) -> dict[str, Any]:
         now = time.time()
         last = self.caption_times[-1] if self.caption_times else None
+        tracks = {
+            lang: {
+                "last_caption_age_s": round(now - seen, 3),
+                "captions_total": self.captions_by_lang.get(lang, 0),
+                "finals_total": self.finals_by_lang.get(lang, 0),
+            }
+            for lang, seen in self.last_caption_by_lang.items()
+        }
         return {
             "captions_total": self.captions_total,
             "finals_total": self.finals_total,
@@ -72,7 +95,9 @@ class SessionMetrics:
             "last_latency_ms": round(self.last_latency_ms, 1)
             if self.last_latency_ms is not None
             else None,
+            "first_caption_latency_s": self.first_caption_latency_s,
             "errors_total": self.errors_total,
+            "tracks": tracks,
         }
 
 
@@ -92,8 +117,11 @@ class MetricsRegistry:
         final: bool,
         t: float | None = None,
         latency_ms: float | None = None,
+        lang: str = "unknown",
     ) -> None:
-        self.for_session(session_id).note_caption(final=final, t=t, latency_ms=latency_ms)
+        self.for_session(session_id).note_caption(
+            final=final, t=t, latency_ms=latency_ms, lang=lang
+        )
 
     def note_error(self, session_id: str, source: str, message: str) -> None:
         m = self.for_session(session_id)
@@ -101,6 +129,16 @@ class MetricsRegistry:
         self._errors.append(
             ErrorEntry(t=time.time(), session=session_id, source=source, message=message)
         )
+
+    def reset_first_caption_latency(self, session_id: str) -> None:
+        """Arm a new first-audio → first-caption measurement."""
+        self.for_session(session_id).first_caption_latency_s = None
+
+    def note_first_caption_latency(self, session_id: str, seconds: float) -> None:
+        """Record the measurement (first caption after arm wins)."""
+        m = self.for_session(session_id)
+        if m.first_caption_latency_s is None and seconds >= 0:
+            m.first_caption_latency_s = round(seconds, 3)
 
     def recent_errors(self, limit: int = 50) -> list[dict[str, Any]]:
         items = list(self._errors)[-limit:]
@@ -116,7 +154,8 @@ class MetricsRegistry:
         degraded = sum(
             1
             for s in sessions
-            if getattr(s, "status", None) and s.status.value in ("degraded", "error")
+            if getattr(s, "status", None)
+            and s.status.value in ("degraded", "error", "reconnecting")
         )
         total_captions = sum(m.captions_total for m in self._sessions.values())
         total_errors = sum(m.errors_total for m in self._sessions.values())
