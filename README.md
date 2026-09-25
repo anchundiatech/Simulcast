@@ -33,7 +33,7 @@ Navegador (mic/pestaña) ──► WebSocket /ingest ─────┘         
 | ✅ | Export SRT / VTT / TXT por sesión e idioma (API REST) |
 | ✅ | `/overlay` — página transparente para **quemar subtítulos en OBS/vMix** (Browser Source, dual EN+ES, posicionable) |
 | ✅ | `/monitor` — **panel de monitoreo** para producción: estado, latencia, rates, errores en vivo |
-| ✅ | `/` — **landing open source**: qué es, cómo usarlo, **referencia de la API** (REST + WebSockets) y roadmap |
+| ✅ | `/` — **landing de producto**: hero, demo en vivo, características, integraciones, open source, cómo empezar, **referencia de la API** (REST + WebSockets) y features futuras |
 
 ## Requisitos
 
@@ -166,7 +166,8 @@ server/
     ├── websocket_ingest.py  # Audio desde navegador
     └── rtmp_ingest.py       # ffmpeg desde MediaMTX
 web/
-├── home.html            # Landing (producto + referencia de la API)
+├── home.html            # Landing de producto + referencia de la API
+├── landing.css / landing.js  # Estilos e interacciones de la landing
 ├── program.html / app.js   # Vista audiencia (grilla + player)
 ├── operator.html / operator.js  # Panel de audio demo + sesiones
 ├── monitor.html / monitor.js    # Panel de monitoreo producción
@@ -187,16 +188,18 @@ web/
 - El endpoint `/ws/ingest` está pensado para operadores; **poné auth o una red privada** en producción (ver `docs/DEPLOY.md`).
 - MediaMTX corre sin auth por defecto: usalo en LAN/VPN o delantalo con firewall.
 
-## Roadmap (opcionales del reto)
+## Futuras features
 
-- [x] Quemar subtítulos en OBS/vMix → `/overlay` (Browser Source dual, params de estilo)
-- [x] Panel de monitoreo para producción → `/monitor` (estado, latencia, rates, errores)
-- [x] Landing open source en `/` con referencia de la API → programa en `/program`
 - [ ] Glosario de términos vía `custom_vocabulary` en `transcribe`
 - [ ] Portugués y más idiomas de salida (más workers de translate)
 - [ ] Latencia p50/p95 y costos en el panel de monitoreo
-- [ ] **Auth por sesión** + tokens efímeros Gemini para clientes (hasta entonces: red/LAN + firewall, ver `docs/DEPLOY.md` §8)
+- [ ] **Auth por sesión** + tokens efímeros Gemini para clientes (hasta entonces: red/LAN + firewall, ver `docs/DEPLOY.md`, «Seguridad en producción»)
 - [ ] Caller SRT/ffmpeg para quemar subtítulos sin Browser Source
+
+## Contribuir
+
+Guía paso a paso en [CONTRIBUTING.md](./CONTRIBUTING.md) (setup, checks, convenciones de PR).
+Al participar aceptás nuestro [Código de Conducta](./CODE_OF_CONDUCT.md).
 
 ## Licencia
 

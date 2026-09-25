@@ -58,11 +58,12 @@ En cada computadora de escenario / máquina de streaming:
 2. Verificá en `/operator` que la sesión pase a **Audio ● activo**.
 3. Los workers de Gemini arrancan solos con el primer audio.
 
-Si el evento ya tiene un MediaMTX / nginx-rtmp existente, apuntá `SIMULCAST` a esa fuente o reutilizá el mismo proceso (ver §7).
+Si el evento ya tiene un MediaMTX / nginx-rtmp existente, apuntá `SIMULCAST` a esa fuente o reutilizá el mismo proceso (ver la sección 7, «Instalación sin Docker»).
 
 ## 5. Vista para la audiencia
 
-La landing en `/` presenta el sistema y su API. Para el evento, compartí la URL del
+La landing en `/` presenta el producto (demo en vivo, características,
+integraciones, open source) y su API. Para el evento, compartí la URL del
 **programa** (grilla con todas las sesiones/casts):
 
 ```
@@ -71,7 +72,7 @@ https://captions.tuevento.com/program
 
 - La portada muestra una **grilla de sesiones** con estado (`en vivo`), idiomas y espectadores.
 - Al elegir una cast se abre `/program?session=main` con la transcripción + traducción.
-- Cada persona también puede elegir **idioma** (Original / Español / English).
+- Cada persona también puede elegir **idioma** (Original / Español / English / Portugués, según la sesión).
 - Ideal embeber como **iframe** o link en el programa del evento.
 - Para apps móviles: la misma URL es PWA-ready (podés agregar manifest después).
 
