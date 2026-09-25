@@ -15,8 +15,13 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # MediaMTX — single-binary RTMP/SRT server for OBS ingest.
+#
+# v1.13.0 ships an H264 DTS-extractor bug that closes RTMP reader
+# connections with "too many reordered frames" (bluenviron/mediamtx#4617,
+# fixed by bluenviron/mediacommon#252 + #263). Keep in sync with the
+# config validated in mediamtx.yml.
 
-ARG MEDIAMTX_VERSION=v1.13.0
+ARG MEDIAMTX_VERSION=v1.21.1
 
 RUN curl -fsSL \
       "https://github.com/bluenviron/mediamtx/releases/download/${MEDIAMTX_VERSION}/mediamtx_${MEDIAMTX_VERSION}_linux_amd64.tar.gz" \
