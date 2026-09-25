@@ -58,6 +58,15 @@ En cada computadora de escenario / máquina de streaming:
 2. Verificá en `/operator` que la sesión pase a **Audio ● activo**.
 3. Los workers de Gemini arrancan solos con el primer audio.
 
+> Atajo: la tarjeta **Conexión OBS** de `/operator` muestra el servidor y
+> la stream key de cada sesión con botones para copiarlos (Server + Key,
+> listos para pegar en OBS).
+
+Si el MediaMTX escucha en otro host/puerto, exportá
+`SIMULCAST_RTMP_BASE` (ej. `rtmp://10.0.0.5:1935`): el backend lo usa para
+el ingest y lo publica en `/api/health` para que el operador copie la URL
+correcta.
+
 Si el evento ya tiene un MediaMTX / nginx-rtmp existente, apuntá `SIMULCAST` a esa fuente o reutilizá el mismo proceso (ver la sección 7, «Instalación sin Docker»).
 
 ## 5. Vista para la audiencia
@@ -88,13 +97,17 @@ Simulcast incluye una página transparente **`/overlay`** pensada como
 
 | Caso | URL |
 |---|---|
+| Dual automático (recomendado) | `https://captions.tuevento.com/overlay/main` |
+| Dual explícito | `https://captions.tuevento.com/overlay?session=main&langs=original,es` |
 | Solo español (EN talk) | `https://captions.tuevento.com/overlay?session=main&lang=es` |
-| Dual EN + ES (arriba/abajo) | `https://captions.tuevento.com/overlay?session=main&langs=original,es` |
 | Solo original | `https://captions.tuevento.com/overlay?session=main&lang=original` |
 | Sin caja (texto + sombra) | `…&style=clean` |
 | Chico / grande | `…&size=28` / `…&size=48` |
 | Arriba a la izquierda | `…&pos=top&align=left` |
 | Debug de conexión | `…&status=1&badge=1` |
+
+La forma `/overlay/<id>` equivale a `?session=<id>` y muestra dual
+(original + traducción) automáticamente según la configuración de la sesión.
 
 3. **Width/Height**: 1920×1080 (igual al canvas).
 4. Desactivá **“Refresh browser when scene becomes active”** para no cortar el WS.
@@ -104,8 +117,8 @@ Simulcast incluye una página transparente **`/overlay`** pensada como
 
 | Param | Default | Descripción |
 |---|---|---|
-| `session` | `stage-1` | Id de la sesión |
-| `lang` | `original` | `original` \| `es` \| `en` \| `pt` \| `all` (= dual original+es) |
+| `session` | `stage-1` (o path `/overlay/<id>`) | Id de la sesión |
+| `lang` | dual según config | Línea única: `original` \| `es` \| `en` \| `pt`; `all` = dual original+traducción |
 | `langs` | — | Dual explícito: `original,es` o `es,en` |
 | `pos` | `bottom` | `bottom` \| `top` |
 | `align` | `center` | `left` \| `center` \| `right` |
@@ -122,7 +135,8 @@ Simulcast incluye una página transparente **`/overlay`** pensada como
 El overlay:
 
 - se reconecta solo con backoff exponencial
-- hace **rolling de 4 fragments** para que los captions cortos se lean como oración
+- muestra un **único caption actual** (original + traducción) que se
+  actualiza en lugar; los finales consecutivos se agrupan en un segmento
 - en dual muestra original (blanco) + traducción (cian) apilados
 - **no muestra scrollbars ni líneas laterales** (ideal OBS Browser Source)
 - **no envía la API key al navegador** (solo WS a tu backend)
