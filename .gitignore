@@ -11,3 +11,6 @@ dist/
 build/
 sessions.yaml
 .DS_Store
+# MediaMTX release artifacts (downloaded for local testing, not source)
+mediamtx
+mediamtx_*.tar.gz
