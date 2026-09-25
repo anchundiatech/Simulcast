@@ -211,6 +211,16 @@ async def overlay() -> FileResponse:
     return FileResponse(WEB_DIR / "overlay.html")
 
 
+@app.get("/overlay/{session_id}")
+async def overlay_session(session_id: str) -> FileResponse:
+    """Same overlay, with the session id in the path (e.g. /overlay/main).
+
+    The page reads the session from the path first and falls back to the
+    ``?session=`` query param. Query params are identical to ``/overlay``.
+    """
+    return FileResponse(WEB_DIR / "overlay.html")
+
+
 app.mount("/static", StaticFiles(directory=WEB_DIR), name="static")
 
 
