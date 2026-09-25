@@ -18,7 +18,7 @@ router = APIRouter(prefix="/api")
 async def health() -> HealthResponse:
     sessions = manager.list()
     live = sum(1 for s in sessions if s.status.value == "live")
-    degraded = sum(1 for s in sessions if s.status.value in ("degraded", "error"))
+    degraded = sum(1 for s in sessions if s.status.value in ("degraded", "error", "reconnecting"))
     g = metrics.global_snapshot(sessions)
     return HealthResponse(
         status="ok",
