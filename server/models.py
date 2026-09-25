@@ -13,6 +13,9 @@ class SessionStatus(StrEnum):
     starting = "starting"
     live = "live"
     degraded = "degraded"
+    # Workers lost the connection (Gemini backoff) or the audio source is
+    # gone and we are waiting for it to come back.
+    reconnecting = "reconnecting"
     error = "error"
     stopped = "stopped"
 
@@ -63,6 +66,15 @@ class WorkerState(BaseModel):
     latency_ms: float | None = None
     connected_at: float | None = None
     audio_queue: int = 0
+    backlog_s: float | None = None
+
+
+class TrackMetricsModel(BaseModel):
+    """Per-track (lang) caption freshness for the monitor."""
+
+    last_caption_age_s: float | None = None
+    captions_total: int = 0
+    finals_total: int = 0
 
 
 class SessionMetricsModel(BaseModel):
@@ -76,6 +88,14 @@ class SessionMetricsModel(BaseModel):
     errors_total: int = 0
     audio_age_s: float | None = None
     uptime_s: float | None = None
+    # Seconds of received audio queued across workers but not yet sent.
+    backlog_s: float | None = None
+    # Measured time from the first audio received after (re)start until
+    # the first caption was emitted. True end-to-end pipeline latency —
+    # re-measured whenever audio resumes after a gap.
+    first_caption_latency_s: float | None = None
+    # Caption freshness per track: {"original": {...}, "es": {...}}.
+    tracks: dict[str, TrackMetricsModel] = Field(default_factory=dict)
 
 
 class SessionState(BaseModel):
