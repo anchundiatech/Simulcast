@@ -4,6 +4,7 @@ FROM python:3.12-slim
 
 # ffmpeg: RTMP → PCM extraction.
 # tini: proper PID1 signal handling.
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ffmpeg \
@@ -14,6 +15,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # MediaMTX — single-binary RTMP/SRT server for OBS ingest.
+
 ARG MEDIAMTX_VERSION=v1.13.0
 
 RUN curl -fsSL \
