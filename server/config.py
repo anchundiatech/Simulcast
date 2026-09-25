@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     simulcast_sessions_file: str = "sessions.yaml"
     simulcast_log_level: str = "info"
     simulcast_max_sessions: int = 20
+    # Base RTMP que ve OBS (MediaMTX escucha :1935 en el mismo host).
+    # El operador la muestra como "Servidor" para copiar.
+    simulcast_rtmp_base: str = "rtmp://localhost:1935"
 
     gemini_model_translate: str = "gemini-3.5-live-translate-preview"
     gemini_model_transcribe: str = "gemini-3.5-transcribe-live"
