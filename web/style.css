@@ -11,6 +11,8 @@
   --danger: #b42318;
   --ok: #0c6089;
   --warn: #069ddb;
+  --live: #0f8a54;
+  --amber: #b45309;
   --border: #d5dde5;
   --radius: 14px;
   font-size: 16px;
@@ -177,30 +179,137 @@ main {
   color: var(--muted);
 }
 
-.live-caption {
-  font-size: clamp(1.5rem, 3.2vw, 2.5rem);
-  line-height: 1.3;
+/* Eyebrow de marca en el header del player ("SIMULCAST / Main Stage"). */
+.eyebrow {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Indicador de estado de la sesión (spec §11): punto de color + texto
+   siempre visible — nunca se depende solo del color (§21). */
+.status-ind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 0.75rem;
   font-weight: 700;
-  min-height: 2.6em;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.status-ind[data-state="live"] .status-dot {
+  background: var(--live);
+}
+.status-ind[data-state="degraded"] .status-dot {
+  background: var(--amber);
+}
+.status-ind[data-state="reconnecting"] .status-dot {
+  background: var(--accent-2);
+}
+.status-ind[data-state="offline"] .status-dot {
+  background: var(--muted);
+}
+.status-latency {
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  border-left: 1px solid var(--border);
+  padding-left: 0.45rem;
+}
+.status-latency[hidden] {
+  display: none;
+}
+
+/* Par de idiomas del header: "Original: English" + selector de traducción. */
+.lang-pair {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.lang-pair-src {
+  white-space: nowrap;
+}
+.lang-pair strong {
   color: var(--text);
-  padding: 0.25rem 0.5rem 1rem;
-  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ */
+/* LiveCaption: la unidad visual es el segmento bilingüe               */
+/* (original + traducción juntos, spec §§2,5,8). El mismo componente   */
+/* lo usan la página de audiencia y el overlay de OBS.                 */
+/* ------------------------------------------------------------------ */
+.lc {
+  display: flex;
+  flex-direction: column;
+}
+.lc-line {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lc-line[hidden] {
+  display: none;
+}
+.lc-text {
   overflow-wrap: anywhere;
 }
 
-/* Interim: mismo lugar, solo se diferencia levemente del texto final. */
-.live-caption.interim {
+/* Caption actual: protagonista (§3) — caja con borde, tipografía grande. */
+.lc-box--current {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  background: var(--panel-2);
+  min-height: 6rem;
+  justify-content: center;
+  gap: 0.15rem;
+}
+.lc-box--current .lc-line--original .lc-text {
+  font-size: clamp(1.45rem, 3vw, 2.3rem);
+  line-height: 1.25;
+  font-weight: 650;
+  color: var(--text);
+}
+.lc-box--current .lc-line--translation .lc-text {
+  font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: 0.35rem;
+}
+/* Interim: el mismo caption, levemente diferenciado (§3). */
+.lc-box--current[data-interim="1"] .lc-line--original .lc-text {
   opacity: 0.72;
   font-weight: 600;
 }
-.live-caption.is-empty {
+.lc-box--current[data-status="empty"] .lc-line--original .lc-text {
   color: var(--muted);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 500;
+}
+/* Original finalizado esperando traducción: marcador tenue (§23: sin
+   saltos de layout cuando llega la traducción). */
+.lc-line--translation[data-pending="1"] .lc-text {
+  opacity: 0.55;
 }
 
 .history-head {
@@ -230,31 +339,66 @@ main {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.7rem 0.25rem 0.25rem 0;
+  padding: 0.25rem 0.25rem 0.25rem 0;
   scrollbar-width: thin;
 }
 
-.line {
-  padding: 0.45rem 0.7rem;
-  border-radius: 10px;
-  background: var(--panel-2);
-  border-left: 3px solid var(--border);
-  font-size: 0.95rem;
+/* Segmentos del historial: original + traducción apilados (§§6,8),
+   separados por divisores — no tarjetas de eventos. */
+.history > .seg {
+  padding: 0.65rem 0.1rem;
+  border-top: 1px solid var(--border);
   animation: fadeIn 0.25s ease;
 }
-.line .ts {
+.history > .seg:last-child {
+  border-bottom: 1px solid var(--border);
+}
+.seg .ts {
   display: block;
   color: var(--muted);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.2rem;
 }
-.line .txt {
+.seg .lc-line--original .lc-text {
+  font-size: 1rem;
+  font-weight: 550;
+  line-height: 1.35;
   color: var(--text);
-  opacity: 0.9;
-  line-height: 1.4;
+}
+.seg .lc-line--translation .lc-text {
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--accent);
+  margin-top: 0.1rem;
+}
+.seg[data-interim="1"] .lc-text {
+  opacity: 0.75;
+}
+
+/* Botón para volver al directo cuando el usuario scrollea el historial. */
+.to-live {
+  align-self: center;
+  margin-top: 0.25rem;
+}
+.to-live[hidden] {
+  display: none;
+}
+
+/* Etiquetas solo para lectores de pantalla (Original:/Traducción:). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 @keyframes fadeIn {
@@ -269,11 +413,8 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .line {
+  .history > .seg {
     animation: none;
-  }
-  .live-caption {
-    transition: none;
   }
 }
 
@@ -580,6 +721,14 @@ dd {
   }
 }
 
+/* Móvil: los captions siempre apilan original → traducción (§22) y el
+   indicador de estado conserva el texto pero oculta la latencia. */
+@media (max-width: 720px) {
+  .status-latency {
+    display: none;
+  }
+}
+
 /* Monitor panel */
 .mon-wrap {
   display: flex;
@@ -867,4 +1016,26 @@ dd {
 .check-list .empty {
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+/* Copy-to-clipboard rows (OBS connection card) */
+.copy-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.copy-row input[readonly] {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  background: var(--panel-2);
+  cursor: text;
+  user-select: all;
+}
+.copy-row .btn {
+  flex: none;
+}
+.btn.copied {
+  border-color: var(--live);
+  color: var(--live);
 }
