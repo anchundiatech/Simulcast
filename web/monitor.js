@@ -45,6 +45,7 @@
       live: "live",
       starting: "warn",
       degraded: "err",
+      reconnecting: "err",
       error: "err",
       stopped: "",
       idle: "",
@@ -90,6 +91,14 @@
     $("kGemini").classList.toggle("bad", !data.gemini_configured);
   }
 
+  function tracksCell(tracks) {
+    const entries = Object.entries(tracks || {});
+    if (!entries.length) return "—";
+    return entries
+      .map(([lang, t]) => `${escapeHtml(lang)}: ${fmtAge(t.last_caption_age_s)}`)
+      .join("<br>");
+  }
+
   function renderSessions(sessions) {
     const grid = $("sessionGrid");
     if (!sessions || !sessions.length) {
@@ -101,7 +110,6 @@
         const m = s.metrics || {};
         const workers = Object.values(s.workers || {});
         const reconnects = workers.reduce((a, w) => a + (w.reconnects || 0), 0);
-        const queue = workers.reduce((a, w) => a + (w.audio_queue || 0), 0);
         const errs = workers.filter((w) => w.last_error);
         const errHtml = errs.length
           ? `<p class="error">${errs
@@ -109,7 +117,7 @@
               .join("<br>")}</p>`
           : "";
         return `
-        <article class="mon-card ${s.status === "live" ? "on" : s.status === "degraded" || s.status === "error" ? "bad" : ""}">
+        <article class="mon-card ${s.status === "live" ? "on" : s.status === "degraded" || s.status === "error" || s.status === "reconnecting" ? "bad" : ""}">
           <header class="mon-card-h">
             <div>
               <strong>${escapeHtml(s.config?.name || s.config?.id)}</strong>
@@ -123,12 +131,14 @@
             <div><dt>Espectadores</dt><dd>${s.viewers ?? 0}</dd></div>
             <div><dt>Captions/min</dt><dd>${m.captions_per_min ?? 0}</dd></div>
             <div><dt>Finales/min</dt><dd>${m.finals_per_min ?? 0}</dd></div>
-            <div><dt>Latencia (EMA)</dt><dd>${fmtMs(m.latency_ms)}</dd></div>
+            <div><dt>Latencia med.</dt><dd>${m.first_caption_latency_s != null ? m.first_caption_latency_s.toFixed(1) + " s" : "—"}</dd></div>
+            <div><dt>Backlog (EMA)</dt><dd>${fmtMs(m.latency_ms)}</dd></div>
+            <div><dt>Backlog audio</dt><dd>${m.backlog_s != null ? m.backlog_s.toFixed(2) + " s" : "—"}</dd></div>
             <div><dt>Últ. caption</dt><dd>${fmtAge(m.last_caption_age_s)}</dd></div>
+            <div><dt>Por pista</dt><dd>${tracksCell(m.tracks)}</dd></div>
             <div><dt>Audio fresco</dt><dd>${fmtAge(m.audio_age_s)}</dd></div>
             <div><dt>Totales</dt><dd>${m.captions_total ?? 0} (${m.finals_total ?? 0} fin.)</dd></div>
             <div><dt>Reconex.</dt><dd>${reconnects}</dd></div>
-            <div><dt>Cola audio</dt><dd>${queue}</dd></div>
             <div><dt>Uptime</dt><dd>${fmtUptime(m.uptime_s)}</dd></div>
             <div><dt>Errores</dt><dd>${m.errors_total ?? 0}</dd></div>
             <div><dt>Origen</dt><dd>${escapeHtml(s.config?.source_language || "auto")} → ${(s.config?.output_languages || []).join(", ")}</dd></div>
