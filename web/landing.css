@@ -5,7 +5,20 @@ html {
   scroll-behavior: smooth;
 }
 
+/* style.css gives every <main> the player layout (1fr + 320px sidebar).
+   The landing needs a plain full-width flow so sections sit below each other. */
+.ls-body main {
+  display: block;
+  flex: 1;
+  padding: 0;
+  max-width: none;
+  margin: 0;
+  width: 100%;
+  grid-template-columns: none;
+}
+
 .ls-body {
+  overflow-x: clip;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
@@ -32,6 +45,7 @@ html {
   margin: 0 auto;
   padding: 0.65rem 1.5rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
 }
@@ -71,6 +85,7 @@ html {
 }
 .ls-nav-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.25rem;
   margin-left: auto;
 }
