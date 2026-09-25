@@ -124,6 +124,8 @@ class HealthResponse(BaseModel):
     degraded_sessions: int
     max_sessions: int
     gemini_configured: bool
+    # Base RTMP que ve OBS (la muestra el operador como "Servidor").
+    rtmp_base: str = "rtmp://localhost:1935"
     version: str = "0.1.0"
     uptime_s: float = 0.0
     captions_per_min: float = 0.0
