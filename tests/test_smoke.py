@@ -83,6 +83,9 @@ def test_health_and_sessions_api() -> None:
 
         r = client.get("/api/sessions/test-stage")
         assert r.status_code == 200
+        metrics_body = r.json()["metrics"]
+        assert "backlog_s" in metrics_body
+        assert "tracks" in metrics_body
 
         r = client.get("/api/sessions/test-stage/captions?lang=es")
         assert r.status_code == 200
@@ -172,20 +175,47 @@ def test_monitor_page_and_api() -> None:
 
 
 def test_metrics_rate_and_errors() -> None:
+    import time as _time
+
     from server.metrics import MetricsRegistry
 
+    now = _time.time()
     reg = MetricsRegistry()
-    reg.note_caption("s1", final=False, t=1.0, latency_ms=120)
-    reg.note_caption("s1", final=True, t=1.1, latency_ms=80)
+    reg.note_caption("s1", final=False, t=now - 2.0, latency_ms=120, lang="original")
+    reg.note_caption("s1", final=True, t=now - 1.0, latency_ms=80, lang="es")
     snap = reg.for_session("s1").snapshot()
     assert snap["captions_total"] == 2
     assert snap["finals_total"] == 1
     assert snap["latency_ms"] is not None
 
+    # Per-track freshness: distinguishes "translation behind" from "all stale".
+    assert snap["tracks"]["original"]["captions_total"] == 1
+    assert snap["tracks"]["es"]["finals_total"] == 1
+    assert snap["tracks"]["es"]["last_caption_age_s"] == pytest.approx(1.0, abs=0.2)
+    assert snap["tracks"]["original"]["last_caption_age_s"] == pytest.approx(2.0, abs=0.2)
+
     reg.note_error("s1", "worker", "boom")
     errs = reg.recent_errors(10)
     assert errs and errs[0]["message"] == "boom"
     assert errs[0]["session"] == "s1"
+
+
+def test_worker_backlog_s() -> None:
+    from server.gemini_worker import GeminiWorker
+
+    w = GeminiWorker(
+        session_id="s",
+        mode="transcribe",
+        target_lang="none",
+        emit=lambda e: None,
+    )
+    assert w.backlog_s == 0.0
+    # 100ms frame → backlog grows by 0.1s per queued chunk.
+    for _ in range(3):
+        w.feed(b"x" * settings.audio_chunk_bytes)
+    assert w.backlog_s == pytest.approx(0.3)
+    # latency_ms is the honest send-side proxy: backlog in ms.
+    assert w.latency_ms is None  # only set when a caption is emitted
 
 
 def test_overlay_page() -> None:
