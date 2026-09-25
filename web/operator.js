@@ -14,6 +14,12 @@
   const statSes = $("#statSes");
   const audioMeter = $("#audioMeter");
   const ingestError = $("#ingestError");
+  const rtmpServer = $("#rtmpServer");
+  const keySession = $("#keySession");
+  const streamKey = $("#streamKey");
+  const copyRtmp = $("#copyRtmp");
+  const copyKey = $("#copyKey");
+  const obsCopyMsg = $("#obsCopyMsg");
 
   let sessions = [];
   /** @type {Map<string, WebSocket>} sid → ws */
@@ -29,6 +35,8 @@
   const checked = new Set();
   /** First session id when sharing started (for the audience link). */
   let primarySid = null;
+  /** Session selected for the OBS stream-key box (survives re-renders). */
+  let selectedKey = null;
 
   const TARGET_RATE = 16000;
 
@@ -45,8 +53,10 @@
         ? `api ok · ${health.live_sessions}/${health.sessions} live`
         : "api sin GEMINI_API_KEY";
       apiBadge.className = `badge ${health.gemini_configured ? "badge-on" : "badge-err"}`;
+      renderRtmpServer(health);
       renderTable();
       renderIngestOptions();
+      renderKeyOptions();
     } catch (e) {
       apiBadge.textContent = "api offline";
       apiBadge.className = "badge badge-err";
@@ -133,6 +143,73 @@
     const first = selectedSessions()[0] || primarySid;
     $("#viewLink").href = first ? `/program?session=${encodeURIComponent(first)}` : "/program";
   }
+
+  /**
+   * Servidor RTMP para OBS: el backend expone su base configurada
+   * (SIMULCAST_RTMP_BASE); si falta, mismo host + :1935 (vale para el
+   * deploy estándar donde MediaMTX corre junto a la API).
+   */
+  function renderRtmpServer(health) {
+    const base = (health && health.rtmp_base) || `rtmp://${location.hostname || "localhost"}:1935`;
+    if (rtmpServer.value !== base) rtmpServer.value = base;
+  }
+
+  /** Selector de sesión para la stream key (la key es el id). */
+  function renderKeyOptions() {
+    const prev = keySession.value || selectedKey;
+    const ids = sessions.map((s) => s.config.id);
+    keySession.innerHTML = "";
+    if (!ids.length) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "—";
+      keySession.appendChild(opt);
+      keySession.value = "";
+      keySession.disabled = true;
+      selectedKey = null;
+      streamKey.value = "";
+      return;
+    }
+    keySession.disabled = false;
+    for (const s of sessions) {
+      const opt = document.createElement("option");
+      opt.value = s.config.id;
+      opt.textContent = `${s.config.name} (${s.config.id})`;
+      keySession.appendChild(opt);
+    }
+    keySession.value = ids.includes(prev) ? prev : ids[0];
+    selectedKey = keySession.value;
+    streamKey.value = selectedKey;
+  }
+
+  keySession.addEventListener("change", () => {
+    selectedKey = keySession.value || null;
+    streamKey.value = selectedKey || "";
+  });
+
+  /**
+   * Copia al portapapeles con feedback en el botón + mensaje para
+   * lectores de pantalla. Si el navegador no deja copiar (ej. HTTP sin
+   * permiso), lo dice en vez de fallar en silencio.
+   */
+  async function copyField(btn, getValue, what) {
+    const ok = await window.SimulcastClipboard.copyText(getValue());
+    const label = btn.querySelector(".copy-label");
+    const prev = label ? label.textContent : btn.textContent;
+    btn.classList.toggle("copied", ok);
+    if (label) label.textContent = ok ? "¡Copiado!" : "Error";
+    obsCopyMsg.hidden = false;
+    obsCopyMsg.textContent = ok
+      ? `${what} copiado al portapapeles.`
+      : `No se pudo copiar automáticamente — copiá el valor a mano.`;
+    setTimeout(() => {
+      btn.classList.remove("copied");
+      if (label) label.textContent = prev;
+    }, 1600);
+  }
+
+  copyRtmp.addEventListener("click", () => copyField(copyRtmp, () => rtmpServer.value, "Servidor"));
+  copyKey.addEventListener("click", () => copyField(copyKey, () => streamKey.value, "Stream key"));
 
   function updateSessionStat() {
     const n = sending ? sockets.size : selectedSessions().length;
