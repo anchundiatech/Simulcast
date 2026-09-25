@@ -81,6 +81,56 @@
       <p id="ingestError" class="error" hidden></p>
     </section>
 
+    <section class="card">
+      <h2>Conexión OBS</h2>
+      <p class="hint">
+        En OBS → <em>Settings → Stream</em>: <em>Service = Custom</em>, pegá el
+        <strong>servidor</strong> y la <strong>stream key</strong> de la sesión
+        (la stream key es el id de la sesión).
+      </p>
+      <div class="field">
+        <span>Servidor RTMP</span>
+        <div class="copy-row">
+          <input
+            id="rtmpServer"
+            type="text"
+            readonly
+            value=""
+            placeholder="rtmp://…:1935"
+            aria-label="Servidor RTMP para copiar"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="copyRtmp" class="btn ghost" type="button">
+            <span class="ico" aria-hidden="true">⧉</span><span class="copy-label">Copiar</span>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <span>Sesión</span>
+        <select id="keySession" aria-label="Sesión para la stream key"></select>
+      </div>
+      <div class="field">
+        <span>Stream key</span>
+        <div class="copy-row">
+          <input
+            id="streamKey"
+            type="text"
+            readonly
+            value=""
+            placeholder="—"
+            aria-label="Stream key para copiar"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="copyKey" class="btn ghost" type="button">
+            <span class="ico" aria-hidden="true">⧉</span><span class="copy-label">Copiar</span>
+          </button>
+        </div>
+      </div>
+      <p id="obsCopyMsg" class="hint" role="status" aria-live="polite" hidden></p>
+    </section>
+
     <section class="card wide">
       <h2>Sesiones</h2>
       <table class="table" id="sessionsTable">
@@ -102,6 +152,7 @@
     </section>
   </main>
 
+  <script src="/static/clipboard.js"></script>
   <script src="/static/operator.js"></script>
 </body>
 </html>
