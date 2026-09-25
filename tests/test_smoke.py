@@ -62,6 +62,8 @@ def test_health_and_sessions_api() -> None:
         body = r.json()
         assert body["status"] == "ok"
         assert body["gemini_configured"] in (True, False)
+        # RTMP base for the OBS "Server" field (operator copy button).
+        assert body["rtmp_base"].startswith("rtmp://")
 
         r = client.post(
             "/api/sessions",
@@ -139,12 +141,22 @@ def test_landing_and_program_pages() -> None:
         assert "viewPlayer" in r.text
         assert "Programa en vivo" in r.text
         assert "sessionSelect" in r.text
+        # Bilingual captions UI: shared LiveCaption + session status.
+        assert "statusIndicator" in r.text
+        assert "currentCaption" in r.text
+        assert "live-caption.js" in r.text
         r = client.get("/operator")
         assert r.status_code == 200
         assert "Compartir audio" in r.text
         # Multi-session share UI.
         assert "ingestSessions" in r.text
         assert "marcá varias" in r.text
+        # OBS connection card: copy server URL + stream key.
+        assert "rtmpServer" in r.text
+        assert "streamKey" in r.text
+        assert "copyRtmp" in r.text
+        assert "copyKey" in r.text
+        assert "clipboard.js" in r.text
 
 
 def test_monitor_page_and_api() -> None:
@@ -229,6 +241,15 @@ def test_overlay_page() -> None:
         r = client.get("/overlay?session=stage-1&langs=original,es&pos=top&size=48")
         assert r.status_code == 200
         assert "langs" in r.text
+        # Path form: /overlay/<session-id> serves the same page.
+        r = client.get("/overlay/stage-1")
+        assert r.status_code == 200
+        assert "overlayCaption" in r.text
+        assert "Simulcast Overlay" in r.text
+        # Shared caption logic is served as static assets.
+        for asset in ("captions.js", "live-caption.js", "overlay.js"):
+            r = client.get(f"/static/{asset}")
+            assert r.status_code == 200, asset
 
 
 def test_export_endpoints_empty() -> None:
