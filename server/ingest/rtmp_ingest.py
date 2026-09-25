@@ -170,4 +170,4 @@ class RtmpIngest:
                 logger.debug("ffmpeg[%s]: %s", session_id, text)
 
 
-rtmp_ingest = RtmpIngest()
+rtmp_ingest = RtmpIngest(rtmp_base=settings.simulcast_rtmp_base)
