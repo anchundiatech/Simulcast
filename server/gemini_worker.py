@@ -23,7 +23,7 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from google import genai
-from google.genai import types
+from google.genai import errors, types
 
 from .config import settings
 from .models import CaptionEvent
@@ -256,56 +256,74 @@ class GeminiWorker:
                 pass
 
     async def _recv_loop(self, session: Any) -> None:
-        async for response in session.receive():
-            if self._stop.is_set():
-                break
+        try:
+            async for response in session.receive():
+                if self._stop.is_set():
+                    break
 
-            # Session resumption handle (survives reconnects).
-            update = getattr(response, "session_resumption_update", None)
-            if update is not None and getattr(update, "resumable", False):
-                handle = getattr(update, "new_handle", None)
-                if handle:
-                    self._session_handle = handle
+                # Session resumption handle (survives reconnects).
+                update = getattr(response, "session_resumption_update", None)
+                if update is not None and getattr(update, "resumable", False):
+                    handle = getattr(update, "new_handle", None)
+                    if handle:
+                        self._session_handle = handle
 
-            go_away = getattr(response, "go_away", None)
-            if go_away is not None:
+                go_away = getattr(response, "go_away", None)
+                if go_away is not None:
+                    logger.info(
+                        "go_away session=%s track=%s time_left=%s",
+                        self.session_id,
+                        self.target_lang,
+                        getattr(go_away, "time_left", None),
+                    )
+
+                content = getattr(response, "server_content", None) or getattr(
+                    response, "serverContent", None
+                )
+
+                if content is None:
+                    # Some SDK versions expose top-level text.
+                    text = getattr(response, "text", None)
+                    if text:
+                        await self._emit_final("original", text)
+                    continue
+
+                interim = getattr(
+                    content, "interim_input_transcription", None
+                ) or getattr(content, "interimInputTranscription", None)
+
+                if interim is not None and getattr(interim, "text", None):
+                    await self._emit_interim("original", interim.text)
+
+                final_in = getattr(
+                    content, "input_transcription", None
+                ) or getattr(content, "inputTranscription", None)
+
+                if final_in is not None and getattr(final_in, "text", None):
+                    await self._emit_final("original", final_in.text)
+
+                if self.mode == "translate":
+                    final_out = getattr(
+                        content, "output_transcription", None
+                    ) or getattr(content, "outputTranscription", None)
+
+                    if final_out is not None and getattr(final_out, "text", None):
+                        await self._emit_final(
+                            self.target_lang,
+                            final_out.text,
+                        )
+
+                    # Mirror interim input onto the target track is NOT done:
+                    # translation finalizes as a whole utterance.
+        except errors.APIError as exc:
+            if getattr(exc, "code", None) == 1000:
                 logger.info(
-                    "go_away session=%s track=%s time_left=%s",
+                    "gemini normal close session=%s track=%s",
                     self.session_id,
                     self.target_lang,
-                    getattr(go_away, "time_left", None),
                 )
-
-            content = getattr(response, "server_content", None) or getattr(
-                response, "serverContent", None
-            )
-            if content is None:
-                # Some SDK versions expose top-level text.
-                text = getattr(response, "text", None)
-                if text:
-                    await self._emit_final("original", text)
-                continue
-
-            interim = getattr(content, "interim_input_transcription", None) or getattr(
-                content, "interimInputTranscription", None
-            )
-            if interim is not None and getattr(interim, "text", None):
-                await self._emit_interim("original", interim.text)
-
-            final_in = getattr(content, "input_transcription", None) or getattr(
-                content, "inputTranscription", None
-            )
-            if final_in is not None and getattr(final_in, "text", None):
-                await self._emit_final("original", final_in.text)
-
-            if self.mode == "translate":
-                final_out = getattr(content, "output_transcription", None) or getattr(
-                    content, "outputTranscription", None
-                )
-                if final_out is not None and getattr(final_out, "text", None):
-                    await self._emit_final(self.target_lang, final_out.text)
-                # Mirror interim input onto the target track is NOT done:
-                # translation finalizes as a whole utterance.
+                return
+            raise
 
     # ------------------------------------------------------------------ emit helpers
 
