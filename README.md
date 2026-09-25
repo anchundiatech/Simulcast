@@ -31,7 +31,7 @@ Navegador (mic/pestaña) ──► WebSocket /ingest ─────┘         
 | ✅ | Docker / docker-compose para despliegue en una máquina |
 | ✅ | Licencia Apache-2.0 + documentación de despliegue |
 | ✅ | Export SRT / VTT / TXT por sesión e idioma (API REST) |
-| ✅ | `/overlay` — página transparente para **quemar subtítulos en OBS/vMix** (Browser Source, dual EN+ES, posicionable) |
+| ✅ | `/overlay` (o `/overlay/<id>`) — página transparente para **quemar subtítulos en OBS/vMix** (Browser Source, dual original+traducción automático, posicionable) |
 | ✅ | `/monitor` — **panel de monitoreo** para producción: estado, latencia, rates, errores en vivo |
 | ✅ | `/` — **landing de producto**: hero, demo en vivo, características, integraciones, open source, cómo empezar, **referencia de la API** (REST + WebSockets) y features futuras |
 
@@ -60,7 +60,7 @@ uvicorn server.main:app --host 0.0.0.0 --port 8000 --reload
 - Programa / audiencia: <http://localhost:8000/program>
 - Operación / audio desde navegador: <http://localhost:8000/operator>
 - Monitoreo producción: <http://localhost:8000/monitor>
-- Overlay OBS (Browser Source): <http://localhost:8000/overlay?session=stage-1&langs=original,es>
+- Overlay OBS (Browser Source): <http://localhost:8000/overlay/stage-1>
 - Health: <http://localhost:8000/api/health>
 - OpenAPI (Swagger): <http://localhost:8000/docs>
 
