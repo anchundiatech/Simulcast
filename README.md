@@ -1,6 +1,60 @@
-# Simulcast
+<div align="center">
 
-**Subtítulos simultáneos open source a escala para conferencias.**
+# 🎙️ SIMULCAST
+
+### Subtítulos simultáneos open source a escala para conferencias
+
+**Transcripción + Traducción en vivo para decenas de sesiones en paralelo**
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](./LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Gemini AI](https://img.shields.io/badge/Gemini_Live_API-8E75B2?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+#### Backend
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![Uvicorn](https://img.shields.io/badge/Uvicorn-499848?style=flat-square&logo=gunicorn&logoColor=white)
+![WebSockets](https://img.shields.io/badge/WebSockets-010101?style=flat-square&logo=socketdotio&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=flat-square&logo=pydantic&logoColor=white)
+![Pydantic Settings](https://img.shields.io/badge/Pydantic_Settings-E92063?style=flat-square&logo=pydantic&logoColor=white)
+![PyYAML](https://img.shields.io/badge/PyYAML-CB171E?style=flat-square&logo=yaml&logoColor=white)
+![httpx](https://img.shields.io/badge/httpx-009688?style=flat-square&logo=python&logoColor=white)
+![google-genai](https://img.shields.io/badge/google__genai-4285F4?style=flat-square&logo=google&logoColor=white)
+
+#### Inteligencia Artificial
+![Gemini Live API](https://img.shields.io/badge/Gemini_Live_API-8E75B2?style=flat-square&logo=google&logoColor=white)
+![Gemini 3.5 Live Translate](https://img.shields.io/badge/Gemini_3.5_Live_Translate-8E75B2?style=flat-square&logo=googletranslate&logoColor=white)
+![Gemini 3.5 Transcribe Live](https://img.shields.io/badge/Gemini_3.5_Transcribe_Live-4285F4?style=flat-square&logo=google&logoColor=white)
+
+#### Frontend
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![WebSocket API](https://img.shields.io/badge/WebSocket_API-010101?style=flat-square&logo=socketdotio&logoColor=white)
+![Web Audio API](https://img.shields.io/badge/Web_Audio_API-FF6C37?style=flat-square&logo=webaudio&logoColor=white)
+
+#### Streaming / Media
+![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=flat-square&logo=ffmpeg&logoColor=white)
+![MediaMTX](https://img.shields.io/badge/MediaMTX-000000?style=flat-square&logo=go&logoColor=white)
+![RTMP](https://img.shields.io/badge/RTMP-FF0000?style=flat-square&logo=obsstudio&logoColor=white)
+![OBS Studio](https://img.shields.io/badge/OBS_Studio-302E31?style=flat-square&logo=obsstudio&logoColor=white)
+![WebRTC](https://img.shields.io/badge/WebRTC-333333?style=flat-square&logo=webrtc&logoColor=white)
+![HLS](https://img.shields.io/badge/HLS-000000?style=flat-square&logo=apple&logoColor=white)
+![SRT](https://img.shields.io/badge/SRT-000000?style=flat-square&logo=ffmpeg&logoColor=white)
+
+#### DevOps & Calidad
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Python Slim](https://img.shields.io/badge/python:3.12--slim-3776AB?style=flat-square&logo=python&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white)
+![Ruff](https://img.shields.io/badge/Ruff-D7FF64?style=flat-square&logo=ruff&logoColor=black)
+![Apache 2.0](https://img.shields.io/badge/Apache--2.0-D22128?style=flat-square&logo=apache&logoColor=white)
+
+</div>
+
+---
 
 Simulcast toma audio en vivo de un escenario (RTMP desde OBS o audio del navegador) y produce subtítulos en tiempo real:
 
